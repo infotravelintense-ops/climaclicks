@@ -123,21 +123,23 @@ export function Step3Space({ language, onUpdate }: Step3Props) {
             <Sun className="w-5 h-5 text-amber-500" />
             {t('paso3.exposicion', language)}
           </label>
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-3 gap-4">
             {[
-              { value: 1, label: 'Normal (100%)' },
-              { value: 1.2, label: 'Muy soleado (120%)' },
+              { value: 1.0, label: 'Normal', sub: '100%' },
+              { value: 1.1, label: 'Soleado', sub: '110%' },
+              { value: 1.2, label: 'Muy soleado', sub: '120%' },
             ].map((option) => (
               <button
                 key={option.value}
                 onClick={() => handleExposicionChange(option.value)}
-                className={`p-4 rounded-xl font-bold transition-all duration-300 ${
+                className={`p-4 rounded-xl font-bold transition-all duration-300 flex flex-col items-center ${
                   exposicionSolar === option.value
                     ? 'bg-gradient-to-r from-amber-500 to-amber-600 text-white shadow-elevated'
                     : 'bg-gray-100 text-gray-900 card-hover'
                 }`}
               >
-                {option.label}
+                <span>{option.label}</span>
+                <span className="text-xs opacity-80">{option.sub}</span>
               </button>
             ))}
           </div>

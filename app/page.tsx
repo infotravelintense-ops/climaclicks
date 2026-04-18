@@ -4,9 +4,8 @@ import { useState, useEffect } from 'react';
 import type { Language, ServiceType, EquipmentType, Equipment } from '@/app/types';
 import { t, getTranslations } from '@/app/utils/translations';
 import { calculateFrigorias, calculatePrice, getUrgenciaPrice, isHighSeason, calculateMetrosAdicionalesPrice } from '@/app/utils/calculations';
-import { Header, Footer } from '@/app/_components/header';
-import { LanguageSelector } from '@/app/_components/language-selector';
-import { ProgressBar } from '@/app/_components/progress-bar';
+import { Header, Footer, WhatsAppButton } from '@/app/_components/header';
+import { HeroIntro } from '@/app/_components/hero-intro';
 import { Step1Service } from '@/app/_components/step-1-service';
 import { Step2Equipment } from '@/app/_components/step-2-equipment';
 import { Step3Space } from '@/app/_components/step-3-space';
@@ -194,30 +193,23 @@ export default function Home() {
 
   return (
     <>
-      <Header language={language} currentStep={currentStep} stepNames={STEP_NAMES[language]} />
+      <Header
+        language={language}
+        currentStep={currentStep}
+        stepNames={STEP_NAMES[language]}
+        onLanguageChange={(lang) => {
+          setLanguage(lang);
+          setQuoteData({ ...quoteData, language: lang });
+        }}
+      />
 
-      <main className="min-h-screen py-8 px-4">
-        <div className="max-w-6xl mx-auto">
-          {/* Language selector - solo en paso 1 */}
-          {currentStep === 1 && (
-            <LanguageSelector
-              current={language}
-              onChange={(lang) => {
-                setLanguage(lang);
-                setQuoteData({ ...quoteData, language: lang });
-              }}
-            />
-          )}
+      {/* SEO Hero solo en paso 1 */}
+      {currentStep === 1 && <HeroIntro />}
 
-          {/* Progress bar */}
-          <ProgressBar
-            currentStep={currentStep}
-            language={language}
-            stepNames={STEP_NAMES[language]}
-          />
-
+      <main className="min-h-screen pb-16 px-4">
+        <div className="max-w-6xl mx-auto pt-8">
           {/* Content area */}
-          <div className="bg-white rounded-xl shadow-lg p-8 mb-8">
+          <div className="bg-white rounded-2xl shadow-card p-6 md:p-10 mb-8">
             {currentStep === 1 && (
               <Step1Service
                 language={language}
@@ -310,6 +302,7 @@ export default function Home() {
       </main>
 
       <Footer language={language} />
+      <WhatsAppButton />
     </>
   );
 }
