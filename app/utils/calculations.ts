@@ -44,6 +44,16 @@ export function isValidMaillorquinPostalCode(cp: string): boolean {
   return code >= 7001 && code <= 7999;
 }
 
+/**
+ * Validación de código postal español (5 dígitos, 01xxx - 52xxx).
+ * Se usa para permitir pagos desde cualquier lugar de España.
+ */
+export function isValidSpanishPostalCode(cp: string): boolean {
+  if (!/^\d{5}$/.test(cp)) return false;
+  const province = parseInt(cp.slice(0, 2), 10);
+  return province >= 1 && province <= 52;
+}
+
 export function calculateMetrosAdicionalesPrice(metros: number): number {
   if (metros === 0) return 0;
   if (metros === 1) return 80;

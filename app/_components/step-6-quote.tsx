@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import type { Language, Equipment, ServiceType } from '@/app/types';
-import { formatCurrency, isValidMaillorquinPostalCode, BASE_INSTALLATION_PRICE } from '@/app/utils/calculations';
+import { formatCurrency, isValidSpanishPostalCode, isValidMaillorquinPostalCode, BASE_INSTALLATION_PRICE } from '@/app/utils/calculations';
 import { useState } from 'react';
 import { CountdownTimer } from './countdown-timer';
 import { Check, Download, AlertTriangle, ExternalLink, CreditCard, Smartphone } from 'lucide-react';
@@ -67,6 +67,22 @@ function getAlternativeBadge(model: Equipment): { label: string; color: string }
   return { label: 'Opción alternativa', color: 'bg-gray-100 text-gray-800 border-gray-300' };
 }
 
+/**
+ * Nombre a mostrar en el carrusel.
+ * Para Giatsu cada línea tiene un nombre comercial: Sakura / Aroma 3 / Aroma Plus.
+ * Para otras marcas se usa la marca con capitalización adecuada.
+ */
+function getDisplayBrand(model: Equipment): string {
+  const m = (model.modelo || '').toUpperCase();
+  if (m.includes('SAKU')) return 'Sakura';
+  if (m.includes('ARPLUS')) return 'Aroma Plus';
+  if (m.includes('AR3')) return 'Aroma 3';
+  const marca = (model.marca || '').trim();
+  if (marca.toLowerCase() === 'infinition') return 'Infinition';
+  if (marca.toLowerCase() === 'htw') return 'HTW';
+  return marca;
+}
+
 // Calcula el precio pre-descuento (con IVA) para mostrar en el carrusel
 function calcPreviewTotal(equipo: number): number {
   const subtotal = equipo + BASE_INSTALLATION_PRICE;
@@ -82,24 +98,32 @@ export function Step6Quote({ language, model, serviceType, alternativeModels, pr
     codigoPostal: '',
   });
   const [cpError, setCpError] = useState(false);
+  const [cpOutsideMallorca, setCpOutsideMallorca] = useState(false);
   const [submitted, setSubmitted] = useState(false);
 
   const includedItems = getIncludedItems(serviceType);
 
   const handleCPChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const cp = e.target.value;
+    const cp = e.target.value.replace(/\D/g, '').slice(0, 5);
     setFormData({ ...formData, codigoPostal: cp });
-    if (cp) setCpError(!isValidMaillorquinPostalCode(cp));
-    else setCpError(false);
+    if (cp.length === 5) {
+      const valid = isValidSpanishPostalCode(cp);
+      setCpError(!valid);
+      setCpOutsideMallorca(valid && !isValidMaillorquinPostalCode(cp));
+    } else {
+      setCpError(false);
+      setCpOutsideMallorca(false);
+    }
   };
 
+  // Pagos siempre activos para cualquier CP español de 5 dígitos.
+  // Si el cliente está fuera de Mallorca (ej: Madrid) pero compra para casa de Mallorca, lo permitimos.
   const isFormValid =
     formData.nombre.length >= 3 &&
     formData.email.includes('@') &&
     formData.telefono.length >= 9 &&
     formData.direccion.length >= 5 &&
-    isValidMaillorquinPostalCode(formData.codigoPostal) &&
-    !cpError;
+    isValidSpanishPostalCode(formData.codigoPostal);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -268,7 +292,7 @@ export function Step6Quote({ language, model, serviceType, alternativeModels, pr
                     <div className={`inline-block px-3 py-0.5 rounded-full text-[10px] font-bold border ${badge.color} mb-2`}>
                       {badge.label}
                     </div>
-                    <p className="text-xl font-black text-slate-900">{alt.marca}</p>
+                    <p className="text-xl font-black text-slate-900">{getDisplayBrand(alt)}</p>
                     <p className="text-[11px] text-gray-500 mb-2">{alt.modelo}</p>
                     <p className="text-sm text-gray-700"><span className="font-semibold">Garantía:</span> {alt.garantia}</p>
                     <p className="text-sm text-gray-700 mb-2"><span className="font-semibold">Eficiencia:</span> {alt.eficiencia}</p>
@@ -314,7 +338,7 @@ export function Step6Quote({ language, model, serviceType, alternativeModels, pr
               } focus:ring-2`}
               required
             />
-            {cpError && <p className="text-xs text-red-600 mt-1">Código Postal inválido. Usa 07001-07999</p>}
+            {cpError && <p className="text-xs text-red-600 mt-1">Código postal no válido. Debe tener 5 dígitos.</p>}
           </div>
           <input
             type="text"
@@ -335,11 +359,16 @@ export function Step6Quote({ language, model, serviceType, alternativeModels, pr
           required
         />
 
-        {/* Aviso “Solo trabajamos en Mallorca” */}
-        <div className="flex items-center justify-center gap-2 text-center text-sm text-orange-700 bg-orange-50 border border-orange-200 rounded-lg px-4 py-2">
-          <AlertTriangle className="w-4 h-4" />
-          Solo trabajamos en Mallorca
-        </div>
+        {/* Aviso opcional si el CP está fuera de Mallorca — NO bloquea el pago */}
+        {cpOutsideMallorca && (
+          <div className="flex items-start gap-2 text-sm text-amber-800 bg-amber-50 border border-amber-200 rounded-lg px-4 py-3">
+            <AlertTriangle className="w-4 h-4 mt-0.5 flex-shrink-0" />
+            <span>
+              Tu código postal no es de Mallorca. Solo instalamos en Mallorca, pero puedes comprar desde cualquier lugar
+              de España si la vivienda donde se instalará está en la isla. Te llamaremos para coordinar la entrega.
+            </span>
+          </div>
+        )}
 
         {/* Botones de pago */}
         <button

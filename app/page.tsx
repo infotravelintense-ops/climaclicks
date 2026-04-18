@@ -238,14 +238,40 @@ export default function Home() {
     metrosPrice
   );
 
-  // Construye lista de alternativas para Paso 6:
-  //   - otras líneas Giatsu NO seleccionadas
-  //   - + INFINITION + HTW del mismo tamaño
+  // Construye lista de alternativas para Paso 6 ordenadas según Canvas:
+  //   1) INFINITION (la más económica)
+  //   2) HTW (opción alternativa)
+  //   3) Aroma 3  (con más garantía)   — sólo si no está ya seleccionada
+  //   4) Aroma Plus (la mejor opción) — sólo si no está ya seleccionada
+  // Las filas excluyen el modelo que el cliente ha seleccionado en el Paso 4.
+  const infinition = otrasMarcas.filter((m) => (m.marca || '').toLowerCase() === 'infinition');
+  const htw = otrasMarcas.filter((m) => (m.marca || '').toLowerCase() === 'htw');
+  const otrasMarcasRestantes = otrasMarcas.filter((m) => {
+    const mk = (m.marca || '').toLowerCase();
+    return mk !== 'infinition' && mk !== 'htw';
+  });
+
+  // Giatsu: recomendados incluye SAKURA / AR3 / ARPLUS. Filtrar el seleccionado.
+  const giatsuFiltrados = recomendados.filter(
+    (m) => !quoteData.modeloSeleccionado || m.modelo !== quoteData.modeloSeleccionado.modelo
+  );
+  // Ordenar: AR3 (con más garantía) antes que ARPLUS (mejor opción)
+  const giatsuOrdenados = [...giatsuFiltrados].sort((a, b) => {
+    const rank = (modelo: string) => {
+      const m = modelo.toUpperCase();
+      if (m.includes('SAKU')) return 1;
+      if (m.includes('AR3')) return 2;
+      if (m.includes('ARPLUS')) return 3;
+      return 9;
+    };
+    return rank(a.modelo) - rank(b.modelo);
+  });
+
   const alternativeModels: Equipment[] = [
-    ...recomendados.filter(
-      (m) => !quoteData.modeloSeleccionado || m.modelo !== quoteData.modeloSeleccionado.modelo
-    ),
-    ...otrasMarcas,
+    ...infinition,
+    ...htw,
+    ...otrasMarcasRestantes,
+    ...giatsuOrdenados,
   ];
 
   return (
