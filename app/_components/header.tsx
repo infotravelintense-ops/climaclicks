@@ -28,12 +28,23 @@ interface HeaderProps {
 }
 
 const navLinks = [
-  { href: '#inicio', label: 'Inicio' },
+  { href: '#presupuesto', label: 'Presupuesto' },
   { href: '#servicios', label: 'Servicios' },
   { href: '#sobre-nosotros', label: 'Sobre nosotros' },
-  { href: '#trabajos', label: 'Trabajos realizados' },
+  { href: '#trabajos', label: 'Trabajos' },
   { href: '#contacto', label: 'Contacto' },
 ];
+
+const smoothScroll = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+  e.preventDefault();
+  const el = document.querySelector(href);
+  if (el) {
+    const top = el.getBoundingClientRect().top + window.scrollY - 120;
+    window.scrollTo({ top, behavior: 'smooth' });
+  } else if (href === '#presupuesto') {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+};
 
 const stepColors: Record<number, string> = {
   1: 'from-blue-600 to-blue-800',
@@ -88,6 +99,7 @@ export function Header({ language, currentStep, stepNames, onLanguageChange }: H
               <a
                 key={link.href}
                 href={link.href}
+                onClick={(e) => smoothScroll(e, link.href)}
                 className="px-4 py-2 text-sm font-semibold text-gray-700 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
               >
                 {link.label}
@@ -132,7 +144,10 @@ export function Header({ language, currentStep, stepNames, onLanguageChange }: H
                 <a
                   key={link.href}
                   href={link.href}
-                  onClick={() => setMobileOpen(false)}
+                  onClick={(e) => {
+                    smoothScroll(e, link.href);
+                    setMobileOpen(false);
+                  }}
                   className="px-4 py-3 text-sm font-semibold text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg"
                 >
                   {link.label}
@@ -229,7 +244,7 @@ export function Footer({ language }: { language: Language }) {
           </div>
 
           {/* Columna 2: Servicios */}
-          <div id="servicios">
+          <div>
             <h4 className="font-bold text-lg mb-4 text-white">Servicios</h4>
             <ul className="space-y-2.5 text-gray-400 text-sm">
               <li className="flex items-start gap-2 hover:text-cyan-300 transition-colors cursor-pointer">
@@ -256,7 +271,7 @@ export function Footer({ language }: { language: Language }) {
           </div>
 
           {/* Columna 3: Enlaces */}
-          <div id="sobre-nosotros">
+          <div>
             <h4 className="font-bold text-lg mb-4 text-white">Empresa</h4>
             <ul className="space-y-2.5 text-gray-400 text-sm">
               <li><a href="#inicio" className="hover:text-cyan-300 transition-colors">Inicio</a></li>

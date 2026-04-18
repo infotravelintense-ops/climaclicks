@@ -6,6 +6,7 @@ import { t, getTranslations } from '@/app/utils/translations';
 import { calculateFrigorias, calculatePrice, getUrgenciaPrice, isHighSeason, calculateMetrosAdicionalesPrice } from '@/app/utils/calculations';
 import { Header, Footer, WhatsAppButton } from '@/app/_components/header';
 import { HeroIntro } from '@/app/_components/hero-intro';
+import { ServicesSection, AboutSection, WorksSection, ContactCTASection } from '@/app/_components/info-sections';
 import { Step1Service } from '@/app/_components/step-1-service';
 import { Step2Equipment } from '@/app/_components/step-2-equipment';
 import { Step3Space } from '@/app/_components/step-3-space';
@@ -76,19 +77,52 @@ export default function Home() {
     if (currentStep === 2 && !quoteData.tipoEquipo) return;
     if (currentStep === 4 && !quoteData.modeloSeleccionado) return;
 
-    // En paso 2, si es servicio rápido (averia/proyecto), saltar a paso especial
-    if (
-      currentStep === 1 &&
-      (quoteData.tipoServicio === 'averia' || quoteData.tipoServicio === 'proyecto')
-    ) {
-      // TODO: Implementar flujo rápido
-      console.log('Flujo rápido:', quoteData.tipoServicio);
-      return;
-    }
-
     if (currentStep < 6) {
       setCurrentStep(currentStep + 1);
+      // Scroll to top on step change
+      if (typeof window !== 'undefined') {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
     }
+  };
+
+  // Avance automático al seleccionar servicio en Paso 1
+  const handleServiceSelect = (service: ServiceType) => {
+    setQuoteData({ ...quoteData, tipoServicio: service });
+    if (service === 'averia' || service === 'proyecto') {
+      // Flujo B - TODO: implementar
+      console.log('Flujo rápido:', service);
+      return;
+    }
+    // Avanzar automáticamente
+    setTimeout(() => {
+      setCurrentStep(2);
+      if (typeof window !== 'undefined') {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    }, 250);
+  };
+
+  // Avance automático al seleccionar tipo de equipo en Paso 2
+  const handleEquipmentSelect = (type: EquipmentType) => {
+    setQuoteData({ ...quoteData, tipoEquipo: type });
+    setTimeout(() => {
+      setCurrentStep(3);
+      if (typeof window !== 'undefined') {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    }, 250);
+  };
+
+  // Avance automático al seleccionar modelo en Paso 4
+  const handleModelSelect = (model: Equipment) => {
+    setQuoteData({ ...quoteData, modeloSeleccionado: model });
+    setTimeout(() => {
+      setCurrentStep(5);
+      if (typeof window !== 'undefined') {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    }, 250);
   };
 
   const handlePrevStep = () => {
@@ -206,16 +240,14 @@ export default function Home() {
       {/* SEO Hero solo en paso 1 */}
       {currentStep === 1 && <HeroIntro />}
 
-      <main className="min-h-screen pb-16 px-4">
+      <main id="presupuesto" className="min-h-screen pb-16 px-4 scroll-mt-32">
         <div className="max-w-6xl mx-auto pt-8">
           {/* Content area */}
           <div className="bg-white rounded-2xl shadow-card p-6 md:p-10 mb-8">
             {currentStep === 1 && (
               <Step1Service
                 language={language}
-                onSelectService={(service) => {
-                  setQuoteData({ ...quoteData, tipoServicio: service });
-                }}
+                onSelectService={handleServiceSelect}
                 selectedService={quoteData.tipoServicio}
               />
             )}
@@ -223,9 +255,7 @@ export default function Home() {
             {currentStep === 2 && (
               <Step2Equipment
                 language={language}
-                onSelectEquipment={(type) => {
-                  setQuoteData({ ...quoteData, tipoEquipo: type });
-                }}
+                onSelectEquipment={handleEquipmentSelect}
                 selectedEquipment={quoteData.tipoEquipo}
               />
             )}
@@ -243,9 +273,7 @@ export default function Home() {
               <Step4Models
                 language={language}
                 models={equipment}
-                onSelectModel={(model) => {
-                  setQuoteData({ ...quoteData, modeloSeleccionado: model });
-                }}
+                onSelectModel={handleModelSelect}
                 selectedModel={quoteData.modeloSeleccionado}
               />
             )}
@@ -277,29 +305,53 @@ export default function Home() {
           </div>
 
           {/* Navigation buttons */}
-          <div className="flex gap-4 justify-between max-w-4xl mx-auto">
-            <button
-              onClick={currentStep === 6 ? handleReset : handlePrevStep}
-              disabled={currentStep === 1}
-              className="px-6 py-3 rounded-lg border-2 border-gray-300 text-gray-700 font-semibold hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
-            >
-              {currentStep === 6 ? <HomeIcon className="w-4 h-4" /> : <ArrowLeft className="w-4 h-4" />}
-              {currentStep === 6 ? t('btn.volverInicio', language) : t('btn.volver', language)}
-            </button>
+          <div className="flex gap-4 justify-between items-center max-w-4xl mx-auto">
+            {/* Botón Volver - visible en pasos 2+ */}
+            {currentStep > 1 ? (
+              <button
+                onClick={currentStep === 6 ? handleReset : handlePrevStep}
+                className="px-6 py-3 rounded-xl border-2 border-gray-300 text-gray-700 font-semibold hover:bg-gray-50 hover:border-blue-500 hover:text-blue-600 transition-all flex items-center gap-2 shadow-sm"
+              >
+                {currentStep === 6 ? <HomeIcon className="w-4 h-4" /> : <ArrowLeft className="w-4 h-4" />}
+                {currentStep === 6 ? t('btn.volverInicio', language) : t('btn.volver', language)}
+              </button>
+            ) : (
+              <div className="flex-1 text-sm text-gray-400 italic">
+                👆 Haz clic en un servicio para avanzar
+              </div>
+            )}
 
-            {currentStep < 6 && (
+            {/* Botón Siguiente - solo en pasos que requieren input (3, 5) */}
+            {(currentStep === 3 || currentStep === 5) && (
               <button
                 onClick={handleNextStep}
                 disabled={loading}
-                className="px-8 py-3 rounded-lg bg-green-500 text-white font-semibold hover:bg-green-600 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                className="px-8 py-3 rounded-xl bg-gradient-to-r from-green-500 to-emerald-600 text-white font-bold shadow-lg hover:shadow-xl hover:scale-105 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
               >
                 {t('btn.siguiente', language)}
                 <ArrowRight className="w-4 h-4" />
               </button>
             )}
+
+            {/* Indicador en pasos de auto-avance */}
+            {(currentStep === 2 || currentStep === 4) && (
+              <div className="text-sm text-gray-400 italic">
+                👆 Selecciona para avanzar automáticamente
+              </div>
+            )}
           </div>
         </div>
       </main>
+
+      {/* Secciones informativas (solo en Paso 1 para no distraer del flujo) */}
+      {currentStep === 1 && (
+        <>
+          <ServicesSection />
+          <AboutSection />
+          <WorksSection />
+          <ContactCTASection />
+        </>
+      )}
 
       <Footer language={language} />
       <WhatsAppButton />
