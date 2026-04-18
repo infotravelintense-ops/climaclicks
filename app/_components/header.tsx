@@ -13,12 +13,24 @@ import {
   X,
   Clock,
   Award,
-  Facebook,
-  Instagram,
-  Linkedin,
+  Shield,
+  MessageCircle,
+  ExternalLink,
 } from 'lucide-react';
 import { Logo } from './logo';
 import { LanguageSelector } from './language-selector';
+
+const PHONE_DISPLAY = '657 12 94 74';
+const PHONE_TEL = '+34657129474';
+const EMAIL = 'contabilidad@grupocostanord.com';
+const WHATSAPP_URL =
+  'https://wa.me/34657129474?text=Hola,%20necesito%20ayuda%20con%20un%20aire%20acondicionado';
+const COMPANY_NAME = 'Manteniments Costa Nord S.L.';
+const ADDRESS_LINE_1 = 'Av. Golf 23, Bajo Izquierda';
+const ADDRESS_LINE_2 = '07458 Can Picafort · Illes Balears';
+const GOOGLE_MAPS_URL =
+  'https://www.google.com/maps/search/?api=1&query=Avenida+Golf+23+Can+Picafort+07458';
+const WEBSITE_URL = 'https://www.mantenimentscostanord.com/';
 
 interface HeaderProps {
   language: Language;
@@ -45,16 +57,22 @@ export function Header({ language, currentStep, stepNames, onLanguageChange }: H
       <div className="hidden md:block bg-slate-900 text-white text-xs">
         <div className="max-w-7xl mx-auto px-6 py-1.5 flex items-center justify-between">
           <div className="flex items-center gap-6">
-            <a href="tel:+34971123456" className="flex items-center gap-1.5 hover:text-cyan-300 transition-colors">
-              <Phone className="w-3.5 h-3.5" /> +34 971 123 456
+            <a
+              href={`tel:${PHONE_TEL}`}
+              className="flex items-center gap-1.5 hover:text-cyan-300 transition-colors"
+            >
+              <Phone className="w-3.5 h-3.5" /> {PHONE_DISPLAY}
             </a>
-            <a href="mailto:info@climaya.es" className="flex items-center gap-1.5 hover:text-cyan-300 transition-colors">
-              <Mail className="w-3.5 h-3.5" /> info@climaya.es
+            <a
+              href={`mailto:${EMAIL}`}
+              className="flex items-center gap-1.5 hover:text-cyan-300 transition-colors"
+            >
+              <Mail className="w-3.5 h-3.5" /> {EMAIL}
             </a>
           </div>
           <div className="flex items-center gap-4">
             <span className="flex items-center gap-1.5">
-              <Clock className="w-3.5 h-3.5" /> Lun-Vie 9:00 - 18:00
+              <Clock className="w-3.5 h-3.5" /> Servicio 24/7
             </span>
             <span className="flex items-center gap-1.5">
               <Award className="w-3.5 h-3.5" /> Instalador autorizado
@@ -63,25 +81,22 @@ export function Header({ language, currentStep, stepNames, onLanguageChange }: H
         </div>
       </div>
 
-      {/* Main navbar: Logo + Banderas + CTA (donde antes estaba Calculadora/Contacto) */}
+      {/* Main navbar: Logo + Banderas + CTA */}
       <div className="max-w-7xl mx-auto px-6 py-4">
         <div className="flex items-center justify-between gap-6">
-          {/* Logo */}
           <Link href="/" className="flex-shrink-0 group">
             <Logo size="md" showText={true} />
           </Link>
 
-          {/* Banderas de idioma (centradas donde antes había enlaces Calculadora/Contacto) */}
           {onLanguageChange && (
             <div className="hidden md:flex flex-1 justify-center">
               <LanguageSelector current={language} onChange={onLanguageChange} compact />
             </div>
           )}
 
-          {/* CTA */}
           <div className="flex items-center gap-3">
             <a
-              href="tel:+34971123456"
+              href={`tel:${PHONE_TEL}`}
               className="hidden sm:inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-600 to-cyan-600 text-white text-sm font-bold rounded-lg shadow-md hover:shadow-lg hover:scale-105 transition-all"
             >
               <Phone className="w-4 h-4" /> Llámanos
@@ -96,7 +111,7 @@ export function Header({ language, currentStep, stepNames, onLanguageChange }: H
         </div>
       </div>
 
-      {/* Franja con mensaje de Mallorca (DEBAJO de las banderas) */}
+      {/* Franja con mensaje de Mallorca */}
       <div className="bg-gradient-to-r from-blue-900 via-blue-800 to-cyan-800 text-white">
         <div className="max-w-7xl mx-auto px-4 py-2 flex items-center justify-center gap-2 text-xs sm:text-sm font-semibold tracking-wide">
           <MapPin className="w-4 h-4 text-cyan-300" />
@@ -104,7 +119,7 @@ export function Header({ language, currentStep, stepNames, onLanguageChange }: H
         </div>
       </div>
 
-      {/* Mobile menu - banderas de idioma */}
+      {/* Mobile menu */}
       <AnimatePresence>
         {mobileOpen && onLanguageChange && (
           <motion.div
@@ -115,7 +130,14 @@ export function Header({ language, currentStep, stepNames, onLanguageChange }: H
           >
             <div className="max-w-7xl mx-auto px-6 py-4 flex flex-col items-center gap-3">
               <span className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Idioma</span>
-              <LanguageSelector current={language} onChange={(lang) => { onLanguageChange(lang); setMobileOpen(false); }} compact />
+              <LanguageSelector
+                current={language}
+                onChange={(lang) => {
+                  onLanguageChange(lang);
+                  setMobileOpen(false);
+                }}
+                compact
+              />
             </div>
           </motion.div>
         )}
@@ -129,7 +151,9 @@ export function Header({ language, currentStep, stepNames, onLanguageChange }: H
               <span className="text-xs font-semibold text-gray-500">Paso {currentStep}/6</span>
               <span className="text-sm font-bold text-gray-900">· {stepNames[currentStep - 1]}</span>
             </div>
-            <span className={`text-xs font-bold bg-gradient-to-r ${stepColors[currentStep] || stepColors[1]} bg-clip-text text-transparent`}>
+            <span
+              className={`text-xs font-bold bg-gradient-to-r ${stepColors[currentStep] || stepColors[1]} bg-clip-text text-transparent`}
+            >
               {Math.round((currentStep / 6) * 100)}% completado
             </span>
           </div>
@@ -148,7 +172,7 @@ export function Header({ language, currentStep, stepNames, onLanguageChange }: H
 }
 
 /* =========================================================
-   FOOTER COMPLETO con datos de empresa
+   FOOTER — Estructura igual al spec Canvas
    ========================================================= */
 export function Footer({ language }: { language: Language }) {
   return (
@@ -162,13 +186,13 @@ export function Footer({ language }: { language: Language }) {
           </div>
           <div className="flex gap-3 flex-wrap justify-center">
             <a
-              href="tel:+34971123456"
+              href={`tel:${PHONE_TEL}`}
               className="inline-flex items-center gap-2 px-6 py-3 bg-white text-blue-700 font-bold rounded-lg shadow-lg hover:scale-105 transition-all"
             >
-              <Phone className="w-5 h-5" /> +34 971 123 456
+              <Phone className="w-5 h-5" /> {PHONE_DISPLAY}
             </a>
             <a
-              href="https://wa.me/34971123456?text=Hola,%20necesito%20ayuda%20con%20un%20aire%20acondicionado"
+              href={WHATSAPP_URL}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 px-6 py-3 bg-green-500 hover:bg-green-600 text-white font-bold rounded-lg shadow-lg hover:scale-105 transition-all"
@@ -179,62 +203,57 @@ export function Footer({ language }: { language: Language }) {
         </div>
       </div>
 
-      {/* Contenido principal */}
-      <div className="max-w-7xl mx-auto px-6 py-16">
+      {/* Badges / tags superiores (3 tags como en el spec) */}
+      <div className="border-b border-white/10">
+        <div className="max-w-7xl mx-auto px-6 py-6">
+          <div className="flex flex-wrap items-center justify-center gap-3 md:gap-6">
+            <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 text-sm font-semibold text-cyan-200">
+              <Clock className="w-4 h-4" /> Servicio 24/7
+            </span>
+            <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 text-sm font-semibold text-cyan-200">
+              <Award className="w-4 h-4" /> Empresa instaladora
+            </span>
+            <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 text-sm font-semibold text-cyan-200">
+              <Shield className="w-4 h-4" /> Calidad garantizada
+            </span>
+          </div>
+        </div>
+      </div>
+
+      {/* Contenido principal: 4 columnas */}
+      <div className="max-w-7xl mx-auto px-6 py-14">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
-          {/* Columna 1: marca */}
+          {/* Columna 1: Marca + descripción + 3 checks */}
           <div>
             <Logo size="md" variant="white" showText={true} />
-            <p className="text-gray-400 text-sm leading-relaxed mt-4">
-              Expertos en climatización en Mallorca. Instalación, sustitución, reparación y mantenimiento de aire acondicionado con más de 15 años de experiencia.
+            <p className="font-bold text-white mt-4">{COMPANY_NAME}</p>
+            <p className="text-gray-400 text-sm leading-relaxed mt-3">
+              Calidad y profesionalidad en todos nuestros servicios. Equipo técnico especializado en
+              climatización, electricidad, fontanería, albañilería y carpintería en Mallorca.
             </p>
-            <div className="mt-6 flex gap-3">
-              <a href="#" aria-label="Facebook" className="w-9 h-9 rounded-lg bg-white/10 hover:bg-blue-600 flex items-center justify-center transition-colors">
-                <Facebook className="w-4 h-4" />
-              </a>
-              <a href="#" aria-label="Instagram" className="w-9 h-9 rounded-lg bg-white/10 hover:bg-pink-600 flex items-center justify-center transition-colors">
-                <Instagram className="w-4 h-4" />
-              </a>
-              <a href="#" aria-label="LinkedIn" className="w-9 h-9 rounded-lg bg-white/10 hover:bg-blue-700 flex items-center justify-center transition-colors">
-                <Linkedin className="w-4 h-4" />
-              </a>
-            </div>
-          </div>
-
-          {/* Columna 2: Servicios */}
-          <div>
-            <h4 className="font-bold text-lg mb-4 text-white">Servicios</h4>
-            <ul className="space-y-2.5 text-gray-400 text-sm">
-              <li className="flex items-start gap-2 hover:text-cyan-300 transition-colors cursor-pointer">
-                <CheckCircle2 className="w-4 h-4 text-emerald-400 mt-0.5 flex-shrink-0" />
-                <span>Instalación de aire acondicionado</span>
+            <ul className="mt-5 space-y-2 text-sm text-gray-300">
+              <li className="flex items-center gap-2">
+                <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0" />
+                <span>Técnicos cualificados</span>
               </li>
-              <li className="flex items-start gap-2 hover:text-cyan-300 transition-colors cursor-pointer">
-                <CheckCircle2 className="w-4 h-4 text-emerald-400 mt-0.5 flex-shrink-0" />
-                <span>Sustitución de equipos antiguos</span>
+              <li className="flex items-center gap-2">
+                <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0" />
+                <span>Atención personalizada</span>
               </li>
-              <li className="flex items-start gap-2 hover:text-cyan-300 transition-colors cursor-pointer">
-                <CheckCircle2 className="w-4 h-4 text-emerald-400 mt-0.5 flex-shrink-0" />
-                <span>Reparación y averías</span>
-              </li>
-              <li className="flex items-start gap-2 hover:text-cyan-300 transition-colors cursor-pointer">
-                <CheckCircle2 className="w-4 h-4 text-emerald-400 mt-0.5 flex-shrink-0" />
-                <span>Mantenimiento preventivo</span>
-              </li>
-              <li className="flex items-start gap-2 hover:text-cyan-300 transition-colors cursor-pointer">
-                <CheckCircle2 className="w-4 h-4 text-emerald-400 mt-0.5 flex-shrink-0" />
-                <span>Proyectos personalizados</span>
+              <li className="flex items-center gap-2">
+                <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0" />
+                <span>Precios competitivos</span>
               </li>
             </ul>
           </div>
 
-          {/* Columna 3: Enlaces a web oficial */}
+          {/* Columna 2: Enlaces rápidos */}
           <div>
-            <h4 className="font-bold text-lg mb-4 text-white">Enlaces</h4>
+            <h4 className="font-bold text-lg mb-4 text-white">Enlaces rápidos</h4>
             <ul className="space-y-2.5 text-gray-400 text-sm">
               <li>
                 <a
-                  href="https://mantenimentscostanord.com/"
+                  href={`${WEBSITE_URL}sobre-nosotros`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="hover:text-cyan-300 transition-colors"
@@ -244,7 +263,7 @@ export function Footer({ language }: { language: Language }) {
               </li>
               <li>
                 <a
-                  href="https://mantenimentscostanord.com/servicios/"
+                  href={`${WEBSITE_URL}servicios`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="hover:text-cyan-300 transition-colors"
@@ -254,7 +273,7 @@ export function Footer({ language }: { language: Language }) {
               </li>
               <li>
                 <a
-                  href="https://mantenimentscostanord.com/trabajos-realizados/"
+                  href={`${WEBSITE_URL}trabajos-realizados`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="hover:text-cyan-300 transition-colors"
@@ -264,7 +283,7 @@ export function Footer({ language }: { language: Language }) {
               </li>
               <li>
                 <a
-                  href="https://mantenimentscostanord.com/contacto/"
+                  href={`${WEBSITE_URL}contacto`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="hover:text-cyan-300 transition-colors"
@@ -272,55 +291,110 @@ export function Footer({ language }: { language: Language }) {
                   Contacto
                 </a>
               </li>
-              <li><a href="/admin" className="hover:text-cyan-300 transition-colors">Área interna</a></li>
             </ul>
           </div>
 
-          {/* Columna 4: Contacto */}
+          {/* Columna 3: Contacto */}
           <div>
             <h4 className="font-bold text-lg mb-4 text-white">Contacto</h4>
             <ul className="space-y-3 text-gray-400 text-sm">
+              <li>
+                <a
+                  href={`tel:${PHONE_TEL}`}
+                  className="flex items-start gap-2 hover:text-cyan-300 transition-colors"
+                >
+                  <Phone className="w-4 h-4 text-cyan-400 mt-0.5 flex-shrink-0" />
+                  <span className="font-semibold text-white">{PHONE_DISPLAY}</span>
+                </a>
+              </li>
+              <li>
+                <a
+                  href={`mailto:${EMAIL}`}
+                  className="flex items-start gap-2 hover:text-cyan-300 transition-colors break-all"
+                >
+                  <Mail className="w-4 h-4 text-cyan-400 mt-0.5 flex-shrink-0" />
+                  <span>{EMAIL}</span>
+                </a>
+              </li>
+              <li>
+                <a
+                  href={WHATSAPP_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-start gap-2 hover:text-cyan-300 transition-colors"
+                >
+                  <MessageCircle className="w-4 h-4 text-cyan-400 mt-0.5 flex-shrink-0" />
+                  <span>WhatsApp directo</span>
+                </a>
+              </li>
               <li className="flex items-start gap-2">
                 <MapPin className="w-4 h-4 text-cyan-400 mt-0.5 flex-shrink-0" />
                 <div>
-                  <p className="font-semibold text-white">Mallorca</p>
-                  <p>Islas Baleares, España</p>
+                  <p>{ADDRESS_LINE_1},</p>
+                  <p>{ADDRESS_LINE_2}</p>
                 </div>
               </li>
+            </ul>
+          </div>
+
+          {/* Columna 4: Información legal */}
+          <div>
+            <h4 className="font-bold text-lg mb-4 text-white">Información legal</h4>
+            <ul className="space-y-2.5 text-gray-400 text-sm">
               <li>
-                <a href="tel:+34971123456" className="flex items-start gap-2 hover:text-cyan-300 transition-colors">
-                  <Phone className="w-4 h-4 text-cyan-400 mt-0.5 flex-shrink-0" />
-                  <span>+34 971 123 456</span>
+                <a href="/legal/aviso-legal" className="hover:text-cyan-300 transition-colors">
+                  Aviso legal
                 </a>
               </li>
               <li>
-                <a href="mailto:info@climaya.es" className="flex items-start gap-2 hover:text-cyan-300 transition-colors">
-                  <Mail className="w-4 h-4 text-cyan-400 mt-0.5 flex-shrink-0" />
-                  <span>info@climaya.es</span>
+                <a href="/legal/privacidad" className="hover:text-cyan-300 transition-colors">
+                  Política de privacidad
                 </a>
               </li>
-              <li className="flex items-start gap-2">
-                <Clock className="w-4 h-4 text-cyan-400 mt-0.5 flex-shrink-0" />
-                <div>
-                  <p>Lun-Vie: 9:00 - 18:00</p>
-                  <p>Sábado: 10:00 - 14:00</p>
-                </div>
+              <li>
+                <a
+                  href={`${WEBSITE_URL}contacto`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-cyan-300 transition-colors"
+                >
+                  Solicitar información
+                </a>
+              </li>
+              <li>
+                <a href="/admin" className="hover:text-cyan-300 transition-colors">
+                  Área interna
+                </a>
               </li>
             </ul>
           </div>
         </div>
 
+        {/* Ubicación card */}
+        <div className="mt-10 rounded-2xl border border-white/10 bg-white/5 p-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+          <div className="flex items-start gap-3">
+            <div className="w-10 h-10 rounded-full bg-cyan-500/20 flex items-center justify-center flex-shrink-0">
+              <MapPin className="w-5 h-5 text-cyan-300" />
+            </div>
+            <div>
+              <p className="font-bold text-white text-base">Ubicación</p>
+              <p className="text-gray-300 text-sm">Av. Golf, 23 · 07458 Can Picafort · Illes Balears</p>
+            </div>
+          </div>
+          <a
+            href={GOOGLE_MAPS_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white font-semibold text-sm rounded-lg shadow-md transition-all"
+          >
+            <ExternalLink className="w-4 h-4" /> Abrir en Google Maps
+          </a>
+        </div>
+
         {/* Bottom bar */}
-        <div className="border-t border-white/10 mt-12 pt-8 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-gray-400">
-          <div>
-            <p>© {new Date().getFullYear()} Climaya — Manteniments Costa Nord S.L. Todos los derechos reservados.</p>
-            <p className="mt-1 text-gray-500">Empresa instaladora autorizada en Mallorca.</p>
-          </div>
-          <div className="flex gap-4">
-            <a href="#" className="hover:text-white transition-colors">Aviso legal</a>
-            <a href="#" className="hover:text-white transition-colors">Privacidad</a>
-            <a href="#" className="hover:text-white transition-colors">Cookies</a>
-          </div>
+        <div className="border-t border-white/10 mt-10 pt-6 flex flex-col md:flex-row items-center justify-between gap-3 text-xs text-gray-400">
+          <p>© {new Date().getFullYear()} {COMPANY_NAME} Todos los derechos reservados.</p>
+          <p className="text-gray-500">Empresa instaladora autorizada en Mallorca.</p>
         </div>
       </div>
     </footer>
@@ -343,7 +417,6 @@ export function WhatsAppButton() {
 
   return (
     <div className="fixed bottom-6 right-6 z-[100] flex flex-col items-end gap-3">
-      {/* Tooltip */}
       <AnimatePresence>
         {expanded && (
           <motion.div
@@ -363,7 +436,7 @@ export function WhatsAppButton() {
             </div>
             <p className="text-sm text-gray-700 mb-4">¡Hola! ¿Necesitas ayuda? Responderemos en menos de 5 minutos.</p>
             <a
-              href="https://wa.me/34971123456?text=Hola,%20necesito%20ayuda%20con%20un%20aire%20acondicionado"
+              href={WHATSAPP_URL}
               target="_blank"
               rel="noopener noreferrer"
               className="block w-full text-center py-2.5 bg-green-500 hover:bg-green-600 text-white font-bold text-sm rounded-lg transition-colors"
@@ -374,7 +447,6 @@ export function WhatsAppButton() {
         )}
       </AnimatePresence>
 
-      {/* Floating button */}
       <motion.button
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.95 }}

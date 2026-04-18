@@ -2,8 +2,15 @@
 
 import { useState, useEffect } from 'react';
 import type { Language, ServiceType, EquipmentType, Equipment } from '@/app/types';
-import { t, getTranslations } from '@/app/utils/translations';
-import { calculateFrigorias, calculatePrice, getUrgenciaPrice, isHighSeason, calculateMetrosAdicionalesPrice } from '@/app/utils/calculations';
+import { t } from '@/app/utils/translations';
+import {
+  calculatePrice,
+  getUrgenciaPrice,
+  isHighSeason,
+  calculateMetrosAdicionalesPrice,
+  BASE_INSTALLATION_PRICE,
+  ANDAMIO_PRICE,
+} from '@/app/utils/calculations';
 import { Header, Footer, WhatsAppButton } from '@/app/_components/header';
 import { Step1Service } from '@/app/_components/step-1-service';
 import { Step2Equipment } from '@/app/_components/step-2-equipment';
@@ -24,13 +31,17 @@ const STEP_NAMES: Record<Language, string[]> = {
 export default function Home() {
   const [currentStep, setCurrentStep] = useState(1);
   const [language, setLanguage] = useState<Language>('es');
-  const [equipment, setEquipment] = useState<Equipment[]>([]);
+  // Recomendados Giatsu (Sakura / Aroma 3 / Aroma Plus) mostrados en paso 4
+  const [recomendados, setRecomendados] = useState<Equipment[]>([]);
+  // Otras marcas (INFINITION, HTW) mostradas como alternativas en paso 6
+  const [otrasMarcas, setOtrasMarcas] = useState<Equipment[]>([]);
   const [loading, setLoading] = useState(false);
 
   const [quoteData, setQuoteData] = useState({
     language: 'es' as Language,
     tipoServicio: null as ServiceType | null,
     tipoEquipo: null as EquipmentType | null,
+    estancia: 'Salon',
     metrosCuadrados: 20,
     altura: 2.5,
     exposicionSolar: 1.0,
@@ -57,13 +68,15 @@ export default function Home() {
     setLoading(true);
     try {
       const response = await fetch(
-        `/api/equipment?type=${quoteData.tipoEquipo}&minFrigorias=${quoteData.frigoriasCalculadas * 0.8}&maxFrigorias=${quoteData.frigoriasCalculadas * 1.2}`
+        `/api/equipment?type=${quoteData.tipoEquipo}&frigorias=${quoteData.frigoriasCalculadas}`
       );
       const data = await response.json();
-      setEquipment(data);
+      setRecomendados(data.recomendados || []);
+      setOtrasMarcas(data.otrasMarcas || []);
     } catch (error) {
       console.error('Error loading equipment:', error);
-      setEquipment([]);
+      setRecomendados([]);
+      setOtrasMarcas([]);
     } finally {
       setLoading(false);
     }
@@ -77,7 +90,6 @@ export default function Home() {
 
     if (currentStep < 6) {
       setCurrentStep(currentStep + 1);
-      // Scroll to top on step change
       if (typeof window !== 'undefined') {
         window.scrollTo({ top: 0, behavior: 'smooth' });
       }
@@ -92,7 +104,6 @@ export default function Home() {
       console.log('Flujo rápido:', service);
       return;
     }
-    // Avanzar automáticamente
     setTimeout(() => {
       setCurrentStep(2);
       if (typeof window !== 'undefined') {
@@ -123,6 +134,11 @@ export default function Home() {
     }, 250);
   };
 
+  // Selección de alternativa en Paso 6 (intercambio en caliente)
+  const handleSelectAlternative = (model: Equipment) => {
+    setQuoteData({ ...quoteData, modeloSeleccionado: model });
+  };
+
   const handlePrevStep = () => {
     if (currentStep > 1) {
       setCurrentStep(currentStep - 1);
@@ -135,6 +151,7 @@ export default function Home() {
       language,
       tipoServicio: null,
       tipoEquipo: null,
+      estancia: 'Salon',
       metrosCuadrados: 20,
       altura: 2.5,
       exposicionSolar: 1.0,
@@ -153,14 +170,13 @@ export default function Home() {
 
   const handleQuoteSubmit = async (formData: any) => {
     try {
-      const precioInstalacion = 800; // Precio base (simplificado)
       const urgenciaPrice = quoteData.urgencia72h ? getUrgenciaPrice(isHighSeason(new Date())) : 0;
-      const andamioPrice = quoteData.andamio ? 120 : 0;
+      const andamioPrice = quoteData.andamio ? ANDAMIO_PRICE : 0;
       const metrosPrice = calculateMetrosAdicionalesPrice(quoteData.metrosAdicionales);
 
       const prices = calculatePrice(
         quoteData.modeloSeleccionado?.precio || 0,
-        precioInstalacion,
+        BASE_INSTALLATION_PRICE,
         quoteData.andamio,
         andamioPrice,
         quoteData.urgencia72h,
@@ -208,13 +224,12 @@ export default function Home() {
     }
   };
 
-  const precioInstalacion = 800; // Simplificado
   const urgenciaPrice = quoteData.urgencia72h ? getUrgenciaPrice(isHighSeason(new Date())) : 0;
-  const andamioPrice = quoteData.andamio ? 120 : 0;
+  const andamioPrice = quoteData.andamio ? ANDAMIO_PRICE : 0;
   const metrosPrice = calculateMetrosAdicionalesPrice(quoteData.metrosAdicionales);
   const prices = calculatePrice(
     quoteData.modeloSeleccionado?.precio || 0,
-    precioInstalacion,
+    BASE_INSTALLATION_PRICE,
     quoteData.andamio,
     andamioPrice,
     quoteData.urgencia72h,
@@ -222,6 +237,16 @@ export default function Home() {
     quoteData.metrosAdicionales,
     metrosPrice
   );
+
+  // Construye lista de alternativas para Paso 6:
+  //   - otras líneas Giatsu NO seleccionadas
+  //   - + INFINITION + HTW del mismo tamaño
+  const alternativeModels: Equipment[] = [
+    ...recomendados.filter(
+      (m) => !quoteData.modeloSeleccionado || m.modelo !== quoteData.modeloSeleccionado.modelo
+    ),
+    ...otrasMarcas,
+  ];
 
   return (
     <>
@@ -282,7 +307,7 @@ export default function Home() {
             {currentStep === 4 && (
               <Step4Models
                 language={language}
-                models={equipment}
+                models={recomendados}
                 onSelectModel={handleModelSelect}
                 selectedModel={quoteData.modeloSeleccionado}
               />
@@ -292,7 +317,12 @@ export default function Home() {
               <Step5Extras
                 language={language}
                 onUpdate={(data) => {
-                  setQuoteData({ ...quoteData, andamio: data.andamio, urgencia72h: data.urgencia, metrosAdicionales: data.metrosAdicionalesCount });
+                  setQuoteData({
+                    ...quoteData,
+                    andamio: data.andamio,
+                    urgencia72h: data.urgencia,
+                    metrosAdicionales: data.metrosAdicionalesCount,
+                  });
                 }}
               />
             )}
@@ -301,22 +331,24 @@ export default function Home() {
               <Step6Quote
                 language={language}
                 model={quoteData.modeloSeleccionado}
+                serviceType={quoteData.tipoServicio}
+                alternativeModels={alternativeModels}
                 precio={{
                   precioEquipo: quoteData.modeloSeleccionado.precio,
-                  precioInstalacion,
+                  precioInstalacion: BASE_INSTALLATION_PRICE,
                   precioAndamio: andamioPrice,
                   precioUrgencia: urgenciaPrice,
                   precioMetrosAdicionales: metrosPrice,
                   ...prices,
                 }}
                 onSubmit={handleQuoteSubmit}
+                onSelectAlternative={handleSelectAlternative}
               />
             )}
           </div>
 
           {/* Navigation buttons */}
           <div className="flex gap-4 justify-between items-center max-w-4xl mx-auto">
-            {/* Botón Volver - visible en pasos 2+ */}
             {currentStep > 1 ? (
               <button
                 onClick={currentStep === 6 ? handleReset : handlePrevStep}
@@ -331,7 +363,6 @@ export default function Home() {
               </div>
             )}
 
-            {/* Botón Siguiente - solo en pasos que requieren input (3, 5) */}
             {(currentStep === 3 || currentStep === 5) && (
               <button
                 onClick={handleNextStep}
@@ -343,7 +374,6 @@ export default function Home() {
               </button>
             )}
 
-            {/* Indicador en pasos de auto-avance */}
             {(currentStep === 2 || currentStep === 4) && (
               <div className="text-sm text-gray-400 italic">
                 👆 Selecciona para avanzar automáticamente

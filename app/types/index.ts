@@ -38,6 +38,7 @@ export interface QuoteData {
   tipoEquipo: EquipmentType | null;
   
   // Paso 3
+  estancia?: string;
   metrosCuadrados: number;
   altura: number;
   exposicionSolar: number;

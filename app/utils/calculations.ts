@@ -60,6 +60,11 @@ export function formatCurrency(value: number): string {
   }).format(value);
 }
 
+// Precio base de instalación (Sustitución / Nueva instalación)
+export const BASE_INSTALLATION_PRICE = 315;
+// Precio del andamio
+export const ANDAMIO_PRICE = 120;
+
 export function calculatePrice(
   precioEquipo: number,
   precioInstalacion: number,
@@ -72,9 +77,10 @@ export function calculatePrice(
 ): { subtotal: number; iva: number; descuentoPorcentaje: number; descuentoMonto: number; totalFinal: number } {
   const subtotal = precioEquipo + precioInstalacion + (andamio ? andamioPrice : 0) + (urgencia72h ? urgenciaPrice : 0) + metrosAdicionalesPrice;
   const iva = subtotal * 0.21;
-  const descuentoPorcentaje = getDiscountPercentage(subtotal + iva);
-  const descuentoMonto = ((subtotal + iva) * descuentoPorcentaje) / 100;
-  const totalFinal = subtotal + iva - descuentoMonto;
+  const totalConIva = subtotal + iva;
+  const descuentoPorcentaje = getDiscountPercentage(totalConIva);
+  const descuentoMonto = (totalConIva * descuentoPorcentaje) / 100;
+  const totalFinal = totalConIva - descuentoMonto;
   
   return {
     subtotal,
