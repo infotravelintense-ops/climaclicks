@@ -28,10 +28,7 @@ interface HeaderProps {
 }
 
 const navLinks = [
-  { href: '#presupuesto', label: 'Presupuesto' },
-  { href: '#servicios', label: 'Servicios' },
-  { href: '#sobre-nosotros', label: 'Sobre nosotros' },
-  { href: '#trabajos', label: 'Trabajos' },
+  { href: '#presupuesto', label: 'Calculadora' },
   { href: '#contacto', label: 'Contacto' },
 ];
 
@@ -274,15 +271,13 @@ export function Footer({ language }: { language: Language }) {
             </ul>
           </div>
 
-          {/* Columna 3: Enlaces */}
+          {/* Columna 3: Enlaces rápidos */}
           <div>
-            <h4 className="font-bold text-lg mb-4 text-white">Empresa</h4>
+            <h4 className="font-bold text-lg mb-4 text-white">Enlaces</h4>
             <ul className="space-y-2.5 text-gray-400 text-sm">
-              <li><a href="#inicio" className="hover:text-cyan-300 transition-colors">Inicio</a></li>
-              <li><a href="#sobre-nosotros" className="hover:text-cyan-300 transition-colors">Sobre nosotros</a></li>
-              <li><a href="#servicios" className="hover:text-cyan-300 transition-colors">Nuestros servicios</a></li>
-              <li><a href="#trabajos" className="hover:text-cyan-300 transition-colors">Trabajos realizados</a></li>
-              <li><a href="#contacto" className="hover:text-cyan-300 transition-colors">Contacto</a></li>
+              <li><a href="#presupuesto" className="hover:text-cyan-300 transition-colors">Calculadora de presupuesto</a></li>
+              <li><a href="tel:+34971123456" className="hover:text-cyan-300 transition-colors">Llamar ahora</a></li>
+              <li><a href="mailto:info@climaya.es" className="hover:text-cyan-300 transition-colors">Escríbenos</a></li>
               <li><a href="/admin" className="hover:text-cyan-300 transition-colors">Área interna</a></li>
             </ul>
           </div>

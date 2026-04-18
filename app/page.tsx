@@ -5,7 +5,6 @@ import type { Language, ServiceType, EquipmentType, Equipment } from '@/app/type
 import { t, getTranslations } from '@/app/utils/translations';
 import { calculateFrigorias, calculatePrice, getUrgenciaPrice, isHighSeason, calculateMetrosAdicionalesPrice } from '@/app/utils/calculations';
 import { Header, Footer, WhatsAppButton } from '@/app/_components/header';
-import { ServicesSection, AboutSection, WorksSection, ContactCTASection } from '@/app/_components/info-sections';
 import { Step1Service } from '@/app/_components/step-1-service';
 import { Step2Equipment } from '@/app/_components/step-2-equipment';
 import { Step3Space } from '@/app/_components/step-3-space';
@@ -353,16 +352,6 @@ export default function Home() {
           </div>
         </div>
       </main>
-
-      {/* Secciones informativas (solo en Paso 1 para no distraer del flujo) */}
-      {currentStep === 1 && (
-        <>
-          <ServicesSection />
-          <AboutSection />
-          <WorksSection />
-          <ContactCTASection />
-        </>
-      )}
 
       <Footer language={language} />
       <WhatsAppButton />
