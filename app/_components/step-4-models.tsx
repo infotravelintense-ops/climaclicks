@@ -1,6 +1,7 @@
 'use client';
 
 import Image from 'next/image';
+import { Snowflake, Zap, Leaf, Award, Trophy, ShieldCheck, Star } from 'lucide-react';
 import type { Language, Equipment } from '@/app/types';
 import { t } from '@/app/utils/translations';
 import { formatCurrency } from '@/app/utils/calculations';
@@ -14,6 +15,7 @@ interface Step4Props {
 
 const badgeLabels = ['La mejor opcion', 'Con mas garantia', 'Relacion calidad precio'];
 const badgeColors = ['bg-amber-100 text-amber-800 border-amber-300', 'bg-green-100 text-green-800 border-green-300', 'bg-blue-100 text-blue-800 border-blue-300'];
+const BadgeIcons = [Trophy, ShieldCheck, Star];
 
 export function Step4Models({ models, language, onSelectModel, selectedModel }: Step4Props) {
   const displayModels = models.slice(0, 3);
@@ -49,9 +51,13 @@ export function Step4Models({ models, language, onSelectModel, selectedModel }: 
             }`}
           >
             {/* Badge superior */}
-            <div className={`absolute top-4 left-4 z-10 px-4 py-2 rounded-full text-sm font-bold border transition-all duration-300 ${
+            <div className={`absolute top-4 left-4 z-10 px-4 py-2 rounded-full text-sm font-bold border transition-all duration-300 flex items-center gap-1.5 ${
               badgeColors[index] || badgeColors[0]
             }`}>
+              {(() => {
+                const Icon = BadgeIcons[index] || BadgeIcons[0];
+                return <Icon className="w-4 h-4" />;
+              })()}
               {badgeLabels[index] || badgeLabels[0]}
             </div>
 
@@ -91,19 +97,31 @@ export function Step4Models({ models, language, onSelectModel, selectedModel }: 
               {/* Especificaciones en grid */}
               <div className="grid grid-cols-2 gap-3 mb-4 pb-4 border-b border-gray-100/50">
                 <div className="bg-blue-50 rounded-lg p-3 group-hover:bg-blue-100 transition-colors">
-                  <p className="text-xs text-gray-600 font-semibold mb-1">Frigorias</p>
+                  <div className="flex items-center gap-1.5 mb-1">
+                    <Snowflake className="w-3.5 h-3.5 text-blue-600" />
+                    <p className="text-xs text-gray-600 font-semibold">Frigorias</p>
+                  </div>
                   <p className="text-base font-bold text-blue-600">{model.frigoriasMin.toLocaleString()}</p>
                 </div>
                 <div className="bg-purple-50 rounded-lg p-3 group-hover:bg-purple-100 transition-colors">
-                  <p className="text-xs text-gray-600 font-semibold mb-1">Potencia</p>
+                  <div className="flex items-center gap-1.5 mb-1">
+                    <Zap className="w-3.5 h-3.5 text-purple-600" />
+                    <p className="text-xs text-gray-600 font-semibold">Potencia</p>
+                  </div>
                   <p className="text-base font-bold text-purple-600">{model.kW} kW</p>
                 </div>
                 <div className="bg-green-50 rounded-lg p-3 group-hover:bg-green-100 transition-colors">
-                  <p className="text-xs text-gray-600 font-semibold mb-1">Eficiencia</p>
+                  <div className="flex items-center gap-1.5 mb-1">
+                    <Leaf className="w-3.5 h-3.5 text-green-600" />
+                    <p className="text-xs text-gray-600 font-semibold">Eficiencia</p>
+                  </div>
                   <p className="text-base font-bold text-green-600">{model.eficiencia}</p>
                 </div>
                 <div className="bg-amber-50 rounded-lg p-3 group-hover:bg-amber-100 transition-colors">
-                  <p className="text-xs text-gray-600 font-semibold mb-1">Garantia</p>
+                  <div className="flex items-center gap-1.5 mb-1">
+                    <ShieldCheck className="w-3.5 h-3.5 text-amber-600" />
+                    <p className="text-xs text-gray-600 font-semibold">Garantia</p>
+                  </div>
                   <p className="text-base font-bold text-amber-600">{model.garantia}</p>
                 </div>
               </div>

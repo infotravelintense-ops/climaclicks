@@ -116,9 +116,9 @@ const translations: TranslationDict = {
   'paso6.applepay': { es: 'Pagar con Apple Pay', en: 'Pay with Apple Pay', de: 'Mit Apple Pay bezahlen', it: 'Paga con Apple Pay', hu: 'Fizetés Apple Pay-vel' },
   
   // Botones generales
-  'btn.volver': { es: '← Volver', en: '← Back', de: '← Zurück', it: '← Indietro', hu: '← Vissza' },
-  'btn.volverInicio': { es: '← Volver al inicio', en: '← Back to start', de: '← Zurück zum Anfang', it: '← Torna all\'inizio', hu: '← Vissza az elejére' },
-  'btn.siguiente': { es: 'Siguiente →', en: 'Next →', de: 'Weiter →', it: 'Avanti →', hu: 'Tovább →' },
+  'btn.volver': { es: 'Volver', en: 'Back', de: 'Zurück', it: 'Indietro', hu: 'Vissza' },
+  'btn.volverInicio': { es: 'Volver al inicio', en: 'Back to start', de: 'Zurück zum Anfang', it: 'Torna all\'inizio', hu: 'Vissza az elejére' },
+  'btn.siguiente': { es: 'Siguiente', en: 'Next', de: 'Weiter', it: 'Avanti', hu: 'Tovább' },
 };
 
 export function t(key: TranslationKey, language: Language): string {

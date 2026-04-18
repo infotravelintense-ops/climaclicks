@@ -9,6 +9,7 @@ import {
   calculateMetrosAdicionalesPrice,
 } from '@/app/utils/calculations';
 import { useState } from 'react';
+import { Ruler, Construction, Zap, Check, Circle } from 'lucide-react';
 
 interface Step5Props {
   language: Language;
@@ -30,29 +31,17 @@ export function Step5Extras({ language, onUpdate }: Step5Props) {
 
   const handleAndamioChange = (value: boolean) => {
     setAndamio(value);
-    onUpdate({
-      andamio: value,
-      urgencia,
-      metrosAdicionalesCount,
-    });
+    onUpdate({ andamio: value, urgencia, metrosAdicionalesCount });
   };
 
   const handleUrgenciaChange = (value: boolean) => {
     setUrgencia(value);
-    onUpdate({
-      andamio,
-      urgencia: value,
-      metrosAdicionalesCount,
-    });
+    onUpdate({ andamio, urgencia: value, metrosAdicionalesCount });
   };
 
   const handleMetrosChange = (value: number) => {
     setMetrosAdicionalesCount(value);
-    onUpdate({
-      andamio,
-      urgencia,
-      metrosAdicionalesCount: value,
-    });
+    onUpdate({ andamio, urgencia, metrosAdicionalesCount: value });
   };
 
   return (
@@ -69,11 +58,17 @@ export function Step5Extras({ language, onUpdate }: Step5Props) {
       <div className="space-y-6">
         {/* Metros Adicionales */}
         <div className="bg-white rounded-2xl shadow-card p-8">
-          <div className="flex justify-between items-center mb-6">
-            <h3 className="text-xl font-bold text-gray-900">
-              Metros adicionales de línea frigorífica
-            </h3>
-            <span className="text-2xl font-bold text-blue-600">{metrosAdicionalesCount} m</span>
+          <div className="flex items-center gap-4 mb-6">
+            <div className="w-14 h-14 rounded-xl bg-blue-50 flex items-center justify-center text-blue-600 flex-shrink-0">
+              <Ruler className="w-7 h-7" strokeWidth={1.5} />
+            </div>
+            <div className="flex-1">
+              <h3 className="text-xl font-bold text-gray-900">
+                Metros adicionales de línea frigorífica
+              </h3>
+              <p className="text-sm text-gray-500">Instalación estándar hasta 3 metros incluida</p>
+            </div>
+            <span className="text-2xl font-bold text-blue-600 whitespace-nowrap">{metrosAdicionalesCount} m</span>
           </div>
           <input
             type="range"
@@ -82,10 +77,10 @@ export function Step5Extras({ language, onUpdate }: Step5Props) {
             value={metrosAdicionalesCount}
             onChange={(e) => handleMetrosChange(parseInt(e.target.value))}
             className="w-full mb-4"
-            style={{ '--value': `${(metrosAdicionalesCount / 100) * 100}%` } as React.CSSProperties}
+            style={{ '--value': `${metrosAdicionalesCount}%` } as React.CSSProperties}
           />
           <div className="flex justify-between items-center pt-4 border-t border-gray-200">
-            <span className="text-gray-600">Precio:</span>
+            <span className="text-gray-600 font-medium">Precio adicional:</span>
             <span className="text-2xl font-bold text-blue-600">{formatCurrency(metrosPrice)}</span>
           </div>
         </div>
@@ -93,19 +88,26 @@ export function Step5Extras({ language, onUpdate }: Step5Props) {
         {/* Andamio */}
         <button
           onClick={() => handleAndamioChange(!andamio)}
-          className={`w-full rounded-2xl p-8 transition-all duration-300 shadow-card card-hover ${
+          className={`w-full rounded-2xl p-8 transition-all duration-300 shadow-card card-hover text-left ${
             andamio
               ? 'bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-500'
               : 'bg-white border-2 border-gray-200'
           }`}
         >
-          <div className="flex items-start justify-between">
-            <div className="text-left">
-              <h3 className="text-xl font-bold text-gray-900 mb-2">Andamio profesional</h3>
-              <p className="text-gray-600">Instalación segura en fachadas o trabajos en altura</p>
+          <div className="flex items-center gap-4">
+            <div className={`w-14 h-14 rounded-xl flex items-center justify-center flex-shrink-0 ${
+              andamio ? 'bg-green-100 text-green-600' : 'bg-gray-100 text-gray-500'
+            }`}>
+              <Construction className="w-7 h-7" strokeWidth={1.5} />
             </div>
-            <div className={`text-3xl font-bold ${andamio ? 'text-green-600' : 'text-gray-400'}`}>
-              {andamio ? '✓' : '○'}
+            <div className="flex-1">
+              <h3 className="text-xl font-bold text-gray-900 mb-1">Andamio profesional</h3>
+              <p className="text-gray-600 text-sm">Instalación segura en fachadas o trabajos en altura</p>
+            </div>
+            <div className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 ${
+              andamio ? 'bg-green-500 text-white' : 'bg-gray-100 text-gray-400'
+            }`}>
+              {andamio ? <Check className="w-5 h-5" strokeWidth={3} /> : <Circle className="w-5 h-5" strokeWidth={1.5} />}
             </div>
           </div>
         </button>
@@ -113,25 +115,31 @@ export function Step5Extras({ language, onUpdate }: Step5Props) {
         {/* Urgencia */}
         <button
           onClick={() => handleUrgenciaChange(!urgencia)}
-          className={`w-full rounded-2xl p-8 transition-all duration-300 shadow-card card-hover ${
+          className={`w-full rounded-2xl p-8 transition-all duration-300 shadow-card card-hover text-left ${
             urgencia
               ? 'bg-gradient-to-r from-red-50 to-orange-50 border-2 border-red-500'
               : 'bg-white border-2 border-gray-200'
           }`}
         >
-          <div className="flex items-start justify-between">
-            <div className="text-left">
-              <h3 className="text-xl font-bold text-gray-900 mb-2">
-                🚀 Servicio urgente 72h
-              </h3>
-              <p className="text-gray-600">
-                {isHighSeas ? 'Temporada alta: ' : 'Temporada baja: '}
-                {formatCurrency(urgenciaPrice)}
-              </p>
-              <p className="text-xs text-gray-500 mt-1">Instalación prioritaria en máximo 72 horas</p>
+          <div className="flex items-center gap-4">
+            <div className={`w-14 h-14 rounded-xl flex items-center justify-center flex-shrink-0 ${
+              urgencia ? 'bg-red-100 text-red-600' : 'bg-gray-100 text-gray-500'
+            }`}>
+              <Zap className="w-7 h-7" strokeWidth={1.5} />
             </div>
-            <div className={`text-3xl font-bold ${urgencia ? 'text-red-600' : 'text-gray-400'}`}>
-              {urgencia ? '✓' : '○'}
+            <div className="flex-1">
+              <h3 className="text-xl font-bold text-gray-900 mb-1">
+                Servicio urgente 72h
+              </h3>
+              <p className="text-gray-600 text-sm mb-1">
+                {isHighSeas ? 'Temporada alta' : 'Temporada baja'}: {formatCurrency(urgenciaPrice)}
+              </p>
+              <p className="text-xs text-gray-500">Instalación prioritaria en máximo 72 horas</p>
+            </div>
+            <div className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 ${
+              urgencia ? 'bg-red-500 text-white' : 'bg-gray-100 text-gray-400'
+            }`}>
+              {urgencia ? <Check className="w-5 h-5" strokeWidth={3} /> : <Circle className="w-5 h-5" strokeWidth={1.5} />}
             </div>
           </div>
         </button>

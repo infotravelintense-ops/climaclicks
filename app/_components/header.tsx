@@ -2,6 +2,7 @@
 
 import type { Language } from '@/app/types';
 import { t } from '@/app/utils/translations';
+import { Snowflake, MapPin, Phone, Mail, CheckCircle2 } from 'lucide-react';
 
 interface HeaderProps {
   language: Language;
@@ -24,7 +25,9 @@ export function Header({ language, currentStep, stepNames }: HeaderProps) {
       <div className="max-w-6xl mx-auto px-6 py-6">
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-3">
-            <div className="text-4xl">❄️</div>
+            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-emerald-500 flex items-center justify-center text-white">
+              <Snowflake className="w-7 h-7" strokeWidth={2} />
+            </div>
             <div>
               <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-emerald-600 bg-clip-text text-transparent">
                 ClimaMallorca
@@ -32,7 +35,7 @@ export function Header({ language, currentStep, stepNames }: HeaderProps) {
               <p className="text-xs text-gray-500">Calculadora profesional de presupuestos</p>
             </div>
           </div>
-          <div className={`text-right`}>
+          <div className="text-right">
             <p className={`text-2xl font-bold bg-gradient-to-r ${stepColors[currentStep] || stepColors[1]} bg-clip-text text-transparent`}>
               {stepNames[currentStep - 1]}
             </p>
@@ -58,35 +61,45 @@ export function Footer({ language }: { language: Language }) {
       <div className="max-w-6xl mx-auto px-6">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
           <div>
-            <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
-              <span className="text-2xl">❄️</span> ClimaMallorca
-            </h3>
+            <div className="text-xl font-bold mb-4 flex items-center gap-2">
+              <Snowflake className="w-6 h-6 text-emerald-400" strokeWidth={2} />
+              <span>ClimaMallorca</span>
+            </div>
             <p className="text-gray-400 text-sm leading-relaxed">
-              Expertos en soluciones de climatizacion en Mallorca desde 2010. Instalacion, mantenimiento y reparacion de aires acondicionados.
+              Expertos en soluciones de climatización en Mallorca. Instalación, mantenimiento y reparación de aires acondicionados.
             </p>
           </div>
 
           <div>
             <h4 className="font-bold mb-4">Contacto</h4>
-            <p className="text-gray-400 text-sm mb-2">📍 Mallorca, Islas Baleares</p>
-            <p className="text-gray-400 text-sm mb-2">📞 +34 XXX XXX XXX</p>
-            <p className="text-gray-400 text-sm">✉️ info@climamallorca.es</p>
+            <p className="text-gray-400 text-sm mb-2 flex items-center gap-2">
+              <MapPin className="w-4 h-4" strokeWidth={2} />
+              <span>Mallorca, Islas Baleares</span>
+            </p>
+            <p className="text-gray-400 text-sm mb-2 flex items-center gap-2">
+              <Phone className="w-4 h-4" strokeWidth={2} />
+              <span>+34 XXX XXX XXX</span>
+            </p>
+            <p className="text-gray-400 text-sm flex items-center gap-2">
+              <Mail className="w-4 h-4" strokeWidth={2} />
+              <span>info@climamallorca.es</span>
+            </p>
           </div>
 
           <div>
             <h4 className="font-bold mb-4">Nuestros servicios</h4>
             <ul className="text-gray-400 text-sm space-y-2">
-              <li>✓ Instalacion de aires acondicionados</li>
-              <li>✓ Sustituciones y actualizaciones</li>
-              <li>✓ Reparacion y mantenimiento</li>
-              <li>✓ Proyectos personalizados</li>
+              <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-emerald-400" strokeWidth={2} /><span>Instalación de aires acondicionados</span></li>
+              <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-emerald-400" strokeWidth={2} /><span>Sustituciones y actualizaciones</span></li>
+              <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-emerald-400" strokeWidth={2} /><span>Reparación y mantenimiento</span></li>
+              <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-emerald-400" strokeWidth={2} /><span>Proyectos personalizados</span></li>
             </ul>
           </div>
         </div>
 
         <div className="border-t border-gray-700 pt-8 text-center text-gray-400 text-sm">
           <p>© 2024 Manteniments Costa Nord S.L. | Todos los derechos reservados</p>
-          <p className="mt-2">Soluciones de climatizacion profesionales en Mallorca</p>
+          <p className="mt-2">Soluciones de climatización profesionales en Mallorca</p>
         </div>
       </div>
     </footer>

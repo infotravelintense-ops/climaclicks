@@ -2,6 +2,7 @@
 
 import type { Language, ServiceType } from '@/app/types';
 import { t } from '@/app/utils/translations';
+import { Repeat, Wrench, Settings, ClipboardList, Check } from 'lucide-react';
 
 interface Step1Props {
   language: Language;
@@ -9,35 +10,26 @@ interface Step1Props {
   selectedService: ServiceType | null;
 }
 
-const serviceIcons: Record<string, string> = {
-  'sustitución': '🔄',
-  'instalacion': '⚙️',
-  'averia': '🔧',
-  'proyecto': '📋',
+const serviceIcons: Record<string, React.ReactNode> = {
+  'sustitución': <Repeat className="w-12 h-12" strokeWidth={1.5} />,
+  'instalacion': <Settings className="w-12 h-12" strokeWidth={1.5} />,
+  'averia': <Wrench className="w-12 h-12" strokeWidth={1.5} />,
+  'proyecto': <ClipboardList className="w-12 h-12" strokeWidth={1.5} />,
+};
+
+const serviceColors: Record<string, string> = {
+  'sustitución': 'text-blue-600 bg-blue-50',
+  'instalacion': 'text-emerald-600 bg-emerald-50',
+  'averia': 'text-amber-600 bg-amber-50',
+  'proyecto': 'text-purple-600 bg-purple-50',
 };
 
 export function Step1Service({ language, onSelectService, selectedService }: Step1Props) {
   const services = [
-    {
-      id: 'sustitución',
-      titleKey: 'paso1.sustitucion',
-      descKey: 'paso1.sustitucion.desc',
-    },
-    {
-      id: 'instalacion',
-      titleKey: 'paso1.instalacion',
-      descKey: 'paso1.instalacion.desc',
-    },
-    {
-      id: 'averia',
-      titleKey: 'paso1.averia',
-      descKey: 'paso1.averia.desc',
-    },
-    {
-      id: 'proyecto',
-      titleKey: 'paso1.proyecto',
-      descKey: 'paso1.proyecto.desc',
-    },
+    { id: 'sustitución', titleKey: 'paso1.sustitucion', descKey: 'paso1.sustitucion.desc' },
+    { id: 'instalacion', titleKey: 'paso1.instalacion', descKey: 'paso1.instalacion.desc' },
+    { id: 'averia', titleKey: 'paso1.averia', descKey: 'paso1.averia.desc' },
+    { id: 'proyecto', titleKey: 'paso1.proyecto', descKey: 'paso1.proyecto.desc' },
   ];
 
   return (
@@ -65,34 +57,29 @@ export function Step1Service({ language, onSelectService, selectedService }: Ste
               animation: `fadeInUp 0.6s ease-out ${idx * 0.1}s both`,
             }}
           >
-            {/* Fondo gradiente */}
-            <div className={`absolute inset-0 ${ 
+            <div className={`absolute inset-0 ${
               selectedService === service.id
                 ? 'bg-gradient-to-br from-blue-50 to-blue-100'
                 : 'bg-gradient-to-br from-white to-gray-50 group-hover:from-blue-50'
             } transition-all duration-300`} />
 
-            {/* Contenido */}
             <div className="relative p-8 text-left h-full flex flex-col">
-              {/* Icono */}
-              <div className="mb-6 text-6xl transform group-hover:scale-110 transition-transform duration-300">
+              {/* Icono profesional */}
+              <div className={`mb-6 inline-flex items-center justify-center w-20 h-20 rounded-2xl ${serviceColors[service.id]} group-hover:scale-110 transition-transform duration-300`}>
                 {serviceIcons[service.id]}
               </div>
 
-              {/* Título */}
               <h3 className="text-2xl font-bold text-gray-900 mb-3 group-hover:text-blue-600 transition-colors">
                 {t(service.titleKey, language)}
               </h3>
 
-              {/* Descripción */}
               <p className="text-gray-600 text-base leading-relaxed flex-grow">
                 {t(service.descKey, language)}
               </p>
 
-              {/* Indicador de selección */}
               {selectedService === service.id && (
-                <div className="mt-6 inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-lg font-semibold text-sm">
-                  <span>✓</span>
+                <div className="mt-6 inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-lg font-semibold text-sm w-fit">
+                  <Check className="w-4 h-4" strokeWidth={3} />
                   Seleccionado
                 </div>
               )}

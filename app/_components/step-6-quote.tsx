@@ -6,6 +6,7 @@ import { t } from '@/app/utils/translations';
 import { formatCurrency, isValidMaillorquinPostalCode } from '@/app/utils/calculations';
 import { useState } from 'react';
 import { CountdownTimer } from './countdown-timer';
+import { Check, Send, ShieldCheck, Award, Snowflake, Zap, Leaf } from 'lucide-react';
 
 interface Step6Props {
   language: Language;
@@ -108,19 +109,31 @@ export function Step6Quote({ language, model, precio, onSubmit }: Step6Props) {
 
               <div className="grid grid-cols-2 gap-3 pt-4 border-t border-gray-100">
                 <div className="bg-blue-50 rounded-lg p-3 text-center">
-                  <p className="text-xs text-gray-600 mb-1">Frigorias</p>
+                  <div className="flex items-center justify-center gap-1 mb-1">
+                    <Snowflake className="w-3 h-3 text-blue-600" />
+                    <p className="text-xs text-gray-600">Frigorias</p>
+                  </div>
                   <p className="font-bold text-blue-600 text-sm">{model.frigoriasMin.toLocaleString()}</p>
                 </div>
                 <div className="bg-purple-50 rounded-lg p-3 text-center">
-                  <p className="text-xs text-gray-600 mb-1">Potencia</p>
+                  <div className="flex items-center justify-center gap-1 mb-1">
+                    <Zap className="w-3 h-3 text-purple-600" />
+                    <p className="text-xs text-gray-600">Potencia</p>
+                  </div>
                   <p className="font-bold text-purple-600 text-sm">{model.kW} kW</p>
                 </div>
                 <div className="bg-green-50 rounded-lg p-3 text-center">
-                  <p className="text-xs text-gray-600 mb-1">Eficiencia</p>
+                  <div className="flex items-center justify-center gap-1 mb-1">
+                    <Leaf className="w-3 h-3 text-green-600" />
+                    <p className="text-xs text-gray-600">Eficiencia</p>
+                  </div>
                   <p className="font-bold text-green-600 text-sm">{model.eficiencia}</p>
                 </div>
                 <div className="bg-amber-50 rounded-lg p-3 text-center">
-                  <p className="text-xs text-gray-600 mb-1">Garantia</p>
+                  <div className="flex items-center justify-center gap-1 mb-1">
+                    <ShieldCheck className="w-3 h-3 text-amber-600" />
+                    <p className="text-xs text-gray-600">Garantia</p>
+                  </div>
                   <p className="font-bold text-amber-600 text-sm">{model.garantia}</p>
                 </div>
               </div>
@@ -263,13 +276,21 @@ export function Step6Quote({ language, model, precio, onSubmit }: Step6Props) {
             <button
               type="submit"
               disabled={!isFormValid || submitted}
-              className={`w-full px-6 py-4 rounded-lg font-bold text-lg transition-all duration-300 mt-6 ${
+              className={`w-full px-6 py-4 rounded-lg font-bold text-lg transition-all duration-300 mt-6 flex items-center justify-center gap-2 ${
                 isFormValid && !submitted
                   ? 'bg-gradient-to-r from-green-500 to-emerald-600 text-white hover:shadow-elevated transform hover:scale-105'
                   : 'bg-gray-300 text-gray-500 cursor-not-allowed'
               }`}
             >
-              {submitted ? '✓ Presupuesto enviado' : 'Solicitar presupuesto'}
+              {submitted ? (
+                <>
+                  <Check className="w-5 h-5" strokeWidth={3} /> Presupuesto enviado
+                </>
+              ) : (
+                <>
+                  <Send className="w-5 h-5" strokeWidth={2} /> Solicitar presupuesto
+                </>
+              )}
             </button>
 
             <p className="text-xs text-gray-500 text-center pt-4">

@@ -4,6 +4,7 @@ import type { Language } from '@/app/types';
 import { t } from '@/app/utils/translations';
 import { calculateFrigorias } from '@/app/utils/calculations';
 import { useState } from 'react';
+import { Ruler, ArrowUpDown, Sun, Snowflake } from 'lucide-react';
 
 interface Step3Props {
   language: Language;
@@ -68,7 +69,8 @@ export function Step3Space({ language, onUpdate }: Step3Props) {
         {/* Métros Cuadrados */}
         <div className="space-y-4">
           <div className="flex justify-between items-center">
-            <label className="text-lg font-bold text-gray-900">
+            <label className="text-lg font-bold text-gray-900 flex items-center gap-2">
+              <Ruler className="w-5 h-5 text-blue-600" />
               {t('paso3.metros', language)}
             </label>
             <span className="text-3xl font-bold text-blue-600">{Math.round(metrosCuadrados)} m²</span>
@@ -90,7 +92,8 @@ export function Step3Space({ language, onUpdate }: Step3Props) {
 
         {/* Altura */}
         <div className="space-y-4">
-          <label className="text-lg font-bold text-gray-900 block">
+          <label className="text-lg font-bold text-gray-900 flex items-center gap-2">
+            <ArrowUpDown className="w-5 h-5 text-blue-600" />
             {t('paso3.altura', language)}
           </label>
           <div className="grid grid-cols-3 gap-4">
@@ -116,7 +119,8 @@ export function Step3Space({ language, onUpdate }: Step3Props) {
 
         {/* Exposición Solar */}
         <div className="space-y-4">
-          <label className="text-lg font-bold text-gray-900 block">
+          <label className="text-lg font-bold text-gray-900 flex items-center gap-2">
+            <Sun className="w-5 h-5 text-amber-500" />
             {t('paso3.exposicion', language)}
           </label>
           <div className="grid grid-cols-2 gap-4">
@@ -141,7 +145,10 @@ export function Step3Space({ language, onUpdate }: Step3Props) {
 
         {/* Resultado */}
         <div className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl p-6 border-2 border-green-200">
-          <p className="text-gray-600 font-semibold mb-2">Frigorias calculadas</p>
+          <div className="flex items-center gap-2 mb-2">
+            <Snowflake className="w-5 h-5 text-green-600" />
+            <p className="text-gray-600 font-semibold">Frigorias calculadas</p>
+          </div>
           <p className="text-4xl font-bold text-green-600">
             {Math.round(frigoriasCalculadas).toLocaleString()}
           </p>

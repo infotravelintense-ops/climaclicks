@@ -13,6 +13,7 @@ import { Step3Space } from '@/app/_components/step-3-space';
 import { Step4Models } from '@/app/_components/step-4-models';
 import { Step5Extras } from '@/app/_components/step-5-extras';
 import { Step6Quote } from '@/app/_components/step-6-quote';
+import { ArrowLeft, ArrowRight, Home as HomeIcon } from 'lucide-react';
 
 const STEP_NAMES: Record<Language, string[]> = {
   es: ['Tipo de instalación', 'Tipo de aire', 'Espacio', 'Modelo', 'Extras', 'Presupuesto'],
@@ -288,8 +289,9 @@ export default function Home() {
             <button
               onClick={currentStep === 6 ? handleReset : handlePrevStep}
               disabled={currentStep === 1}
-              className="px-6 py-3 rounded-lg border-2 border-gray-300 text-gray-700 font-semibold hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="px-6 py-3 rounded-lg border-2 border-gray-300 text-gray-700 font-semibold hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
             >
+              {currentStep === 6 ? <HomeIcon className="w-4 h-4" /> : <ArrowLeft className="w-4 h-4" />}
               {currentStep === 6 ? t('btn.volverInicio', language) : t('btn.volver', language)}
             </button>
 
@@ -297,9 +299,10 @@ export default function Home() {
               <button
                 onClick={handleNextStep}
                 disabled={loading}
-                className="px-8 py-3 rounded-lg bg-green-500 text-white font-semibold hover:bg-green-600 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="px-8 py-3 rounded-lg bg-green-500 text-white font-semibold hover:bg-green-600 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
               >
                 {t('btn.siguiente', language)}
+                <ArrowRight className="w-4 h-4" />
               </button>
             )}
           </div>
