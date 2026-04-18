@@ -5,7 +5,6 @@ import type { Language, ServiceType, EquipmentType, Equipment } from '@/app/type
 import { t, getTranslations } from '@/app/utils/translations';
 import { calculateFrigorias, calculatePrice, getUrgenciaPrice, isHighSeason, calculateMetrosAdicionalesPrice } from '@/app/utils/calculations';
 import { Header, Footer, WhatsAppButton } from '@/app/_components/header';
-import { HeroIntro } from '@/app/_components/hero-intro';
 import { ServicesSection, AboutSection, WorksSection, ContactCTASection } from '@/app/_components/info-sections';
 import { Step1Service } from '@/app/_components/step-1-service';
 import { Step2Equipment } from '@/app/_components/step-2-equipment';
@@ -237,11 +236,23 @@ export default function Home() {
         }}
       />
 
-      {/* SEO Hero solo en paso 1 */}
-      {currentStep === 1 && <HeroIntro />}
+      <main id="presupuesto" className="min-h-screen pb-16 px-4 scroll-mt-32 pt-6 md:pt-10">
+        <div className="max-w-6xl mx-auto">
+          {/* Título compacto visible solo en paso 1 */}
+          {currentStep === 1 && (
+            <div className="text-center mb-6 md:mb-8">
+              <h1 className="text-3xl md:text-4xl font-black text-slate-900 mb-2">
+                Calcula tu presupuesto de{' '}
+                <span className="bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent">
+                  aire acondicionado
+                </span>
+              </h1>
+              <p className="text-slate-600 text-sm md:text-base">
+                6 pasos · presupuesto cerrado · sin compromiso
+              </p>
+            </div>
+          )}
 
-      <main id="presupuesto" className="min-h-screen pb-16 px-4 scroll-mt-32">
-        <div className="max-w-6xl mx-auto pt-8">
           {/* Content area */}
           <div className="bg-white rounded-2xl shadow-card p-6 md:p-10 mb-8">
             {currentStep === 1 && (

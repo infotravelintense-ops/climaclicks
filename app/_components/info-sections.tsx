@@ -18,6 +18,11 @@ import {
   Phone,
   Mail,
   MapPin,
+  Hotel,
+  UtensilsCrossed,
+  Store,
+  TreePalm,
+  Building,
 } from 'lucide-react';
 
 /* ==========================================
@@ -132,7 +137,7 @@ export function AboutSection() {
   const values = [
     { icon: CheckCircle2, text: 'Presupuestos cerrados, sin sorpresas' },
     { icon: CheckCircle2, text: 'Equipo técnico certificado y autorizado' },
-    { icon: CheckCircle2, text: 'Equipos de primeras marcas con garantía oficial' },
+    { icon: CheckCircle2, text: 'Equipos Giatsu, HTW e INFINITION con garantía oficial' },
     { icon: CheckCircle2, text: 'Servicio postventa y mantenimiento' },
     { icon: CheckCircle2, text: 'Financiación hasta 12 meses sin intereses' },
     { icon: CheckCircle2, text: 'Respuesta en menos de 24h' },
@@ -158,7 +163,7 @@ export function AboutSection() {
               <strong>Climaya</strong> es la marca de <strong>Manteniments Costa Nord S.L.</strong>, empresa instaladora autorizada especializada en aire acondicionado en Mallorca. Con más de 15 años de experiencia, hemos ayudado a miles de familias y empresas a disfrutar del confort ideal en sus hogares y negocios.
             </p>
             <p className="text-gray-600 text-lg leading-relaxed mb-8">
-              Nos diferenciamos por ofrecer <strong>presupuestos cerrados online</strong>, transparencia total y un servicio técnico certificado. Trabajamos con las mejores marcas del mercado para garantizar calidad y durabilidad.
+              Nos diferenciamos por ofrecer <strong>presupuestos cerrados online</strong>, transparencia total y un servicio técnico certificado. Trabajamos con las marcas <strong>Giatsu</strong>, <strong>HTW</strong> e <strong>INFINITION</strong> para garantizar calidad, eficiencia y durabilidad.
             </p>
             <div className="space-y-3">
               {values.map((v) => {
@@ -208,38 +213,44 @@ export function AboutSection() {
 export function WorksSection() {
   const works = [
     {
+      icon: TreePalm,
       type: 'Villa en Andratx',
       description: 'Sistema multisplit de 4 unidades para vivienda de 250m² con equipos Giatsu A+++.',
-      details: '4 unidades interiores · Equipos A+++',
+      details: '4 unidades · Giatsu A+++',
       color: 'from-blue-500 to-blue-700',
     },
     {
+      icon: Building,
       type: 'Oficina en Palma',
       description: 'Instalación de conductos para oficina de 180m² con zonificación inteligente WiFi.',
-      details: 'Sistema conductos · Zonificación WiFi',
+      details: 'Conductos · Zonificación WiFi',
       color: 'from-cyan-500 to-cyan-700',
     },
     {
+      icon: UtensilsCrossed,
       type: 'Restaurante Portocolom',
       description: 'Climatización integral con sistema casete de techo para sala de 120m².',
       details: 'Casete techo · 24.000 frigorías',
       color: 'from-emerald-500 to-emerald-700',
     },
     {
+      icon: Hotel,
       type: 'Hotel Cala Millor',
-      description: 'Renovación completa de 24 habitaciones con equipos split de bajo consumo.',
-      details: '24 splits · Eficiencia A+++',
+      description: 'Renovación completa de 24 habitaciones con equipos split HTW de bajo consumo.',
+      details: '24 splits HTW · Eficiencia A+++',
       color: 'from-purple-500 to-purple-700',
     },
     {
+      icon: HomeIcon,
       type: 'Vivienda Sóller',
-      description: 'Sustitución de equipo antiguo por modelo eco-silencioso con control por voz.',
-      details: 'Sustitución · WiFi + Alexa',
+      description: 'Sustitución de equipo antiguo por modelo INFINITION eco-silencioso con control WiFi.',
+      details: 'Sustitución · INFINITION WiFi',
       color: 'from-amber-500 to-amber-700',
     },
     {
+      icon: Store,
       type: 'Local comercial Inca',
-      description: 'Suelo-techo para tienda de 80m² con instalación en 1 solo día."',
+      description: 'Suelo-techo para tienda de 80m² con instalación en 1 solo día.',
       details: 'Suelo-techo · Instalación rápida',
       color: 'from-rose-500 to-rose-700',
     },
@@ -267,27 +278,30 @@ export function WorksSection() {
         </motion.div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {works.map((w, idx) => (
-            <motion.div
-              key={w.type}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.4, delay: idx * 0.08 }}
-              className="group relative overflow-hidden rounded-2xl shadow-sm hover:shadow-xl border border-gray-100 bg-white"
-            >
-              <div className={`h-40 bg-gradient-to-br ${w.color} flex items-center justify-center relative overflow-hidden`}>
-                <HomeIcon className="w-20 h-20 text-white/30 group-hover:scale-110 transition-transform" />
-                <div className="absolute top-3 right-3 px-3 py-1 bg-white/20 backdrop-blur-sm rounded-full text-white text-xs font-semibold">
-                  {w.details}
+          {works.map((w, idx) => {
+            const Icon = w.icon;
+            return (
+              <motion.div
+                key={w.type}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.4, delay: idx * 0.08 }}
+                className="group relative overflow-hidden rounded-2xl shadow-sm hover:shadow-xl border border-gray-100 bg-white"
+              >
+                <div className={`h-40 bg-gradient-to-br ${w.color} flex items-center justify-center relative overflow-hidden`}>
+                  <Icon className="w-20 h-20 text-white/40 group-hover:scale-110 transition-transform" strokeWidth={1.5} />
+                  <div className="absolute top-3 right-3 px-3 py-1 bg-white/20 backdrop-blur-sm rounded-full text-white text-xs font-semibold">
+                    {w.details}
+                  </div>
                 </div>
-              </div>
-              <div className="p-6">
-                <h3 className="font-bold text-gray-900 text-lg mb-2">{w.type}</h3>
-                <p className="text-gray-600 text-sm leading-relaxed">{w.description}</p>
-              </div>
-            </motion.div>
-          ))}
+                <div className="p-6">
+                  <h3 className="font-bold text-gray-900 text-lg mb-2">{w.type}</h3>
+                  <p className="text-gray-600 text-sm leading-relaxed">{w.description}</p>
+                </div>
+              </motion.div>
+            );
+          })}
         </div>
       </div>
     </section>

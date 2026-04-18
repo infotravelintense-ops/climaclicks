@@ -60,13 +60,27 @@ export function Header({ language, currentStep, stepNames, onLanguageChange }: H
 
   return (
     <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-md shadow-sm border-b border-gray-100">
-      {/* Top bar con info de contacto */}
-      <div className="hidden md:block bg-gradient-to-r from-blue-900 via-blue-800 to-cyan-800 text-white text-xs">
-        <div className="max-w-7xl mx-auto px-6 py-2 flex items-center justify-between">
+      {/* Banner superior: Banderas + Mensaje Mallorca (en TODAS las páginas) */}
+      <div className="bg-gradient-to-r from-blue-900 via-blue-800 to-cyan-800 text-white">
+        <div className="max-w-7xl mx-auto px-4 py-2.5 flex flex-col items-center gap-2">
+          {/* Banderas de idioma ENCIMA */}
+          {onLanguageChange && (
+            <div className="flex items-center justify-center">
+              <LanguageSelector current={language} onChange={onLanguageChange} compact />
+            </div>
+          )}
+          {/* Mensaje Mallorca DEBAJO */}
+          <div className="flex items-center gap-2 text-xs sm:text-sm font-semibold tracking-wide">
+            <MapPin className="w-4 h-4 text-cyan-300" />
+            <span>Servicio de climatización disponible en Mallorca</span>
+          </div>
+        </div>
+      </div>
+
+      {/* Top bar con info de contacto (solo escritorio) */}
+      <div className="hidden md:block bg-slate-900 text-white text-xs border-t border-white/10">
+        <div className="max-w-7xl mx-auto px-6 py-1.5 flex items-center justify-between">
           <div className="flex items-center gap-6">
-            <span className="flex items-center gap-1.5">
-              <MapPin className="w-3.5 h-3.5" /> Mallorca, Islas Baleares
-            </span>
             <a href="tel:+34971123456" className="flex items-center gap-1.5 hover:text-cyan-300 transition-colors">
               <Phone className="w-3.5 h-3.5" /> +34 971 123 456
             </a>
@@ -107,13 +121,8 @@ export function Header({ language, currentStep, stepNames, onLanguageChange }: H
             ))}
           </nav>
 
-          {/* Idioma + CTA */}
+          {/* CTA */}
           <div className="flex items-center gap-3">
-            {onLanguageChange && (
-              <div className="hidden sm:block">
-                <LanguageSelector current={language} onChange={onLanguageChange} compact />
-              </div>
-            )}
             <a
               href="tel:+34971123456"
               className="hidden sm:inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-600 to-cyan-600 text-white text-sm font-bold rounded-lg shadow-md hover:shadow-lg hover:scale-105 transition-all"
@@ -153,11 +162,6 @@ export function Header({ language, currentStep, stepNames, onLanguageChange }: H
                   {link.label}
                 </a>
               ))}
-              {onLanguageChange && (
-                <div className="pt-3 border-t border-gray-100 mt-2">
-                  <LanguageSelector current={language} onChange={onLanguageChange} compact />
-                </div>
-              )}
             </nav>
           </motion.div>
         )}
