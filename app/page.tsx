@@ -243,11 +243,6 @@ export default function Home() {
                 onUpdate={(data) => {
                   setQuoteData({ ...quoteData, ...data });
                 }}
-                initialData={{
-                  metrosCuadrados: quoteData.metrosCuadrados,
-                  altura: quoteData.altura,
-                  exposicionSolar: quoteData.exposicionSolar,
-                }}
               />
             )}
 
@@ -266,12 +261,7 @@ export default function Home() {
               <Step5Extras
                 language={language}
                 onUpdate={(data) => {
-                  setQuoteData({ ...quoteData, ...data });
-                }}
-                initialData={{
-                  andamio: quoteData.andamio,
-                  urgencia72h: quoteData.urgencia72h,
-                  metrosAdicionales: quoteData.metrosAdicionales,
+                  setQuoteData({ ...quoteData, andamio: data.andamio, urgencia72h: data.urgencia, metrosAdicionales: data.metrosAdicionalesCount });
                 }}
               />
             )}

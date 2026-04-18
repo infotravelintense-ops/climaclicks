@@ -25,6 +25,8 @@ export interface Equipment {
   garantia: string;
   eficiencia: string;
   descripcion: string;
+  imagen?: string;
+  imagenMarca?: string;
 }
 
 export interface QuoteData {

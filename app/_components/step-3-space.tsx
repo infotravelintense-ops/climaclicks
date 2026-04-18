@@ -7,132 +7,145 @@ import { useState } from 'react';
 
 interface Step3Props {
   language: Language;
-  onUpdate: (data: { metrosCuadrados: number; altura: number; exposicionSolar: number; frigoriasCalculadas: number }) => void;
-  initialData: { metrosCuadrados: number; altura: number; exposicionSolar: number };
+  onUpdate: (data: {
+    metrosCuadrados: number;
+    altura: number;
+    exposicionSolar: number;
+    frigoriasCalculadas: number;
+  }) => void;
 }
 
-export function Step3Space({ language, onUpdate, initialData }: Step3Props) {
-  const [metros, setMetros] = useState(initialData.metrosCuadrados);
-  const [altura, setAltura] = useState(initialData.altura);
-  const [exposicion, setExposicion] = useState(initialData.exposicionSolar);
+export function Step3Space({ language, onUpdate }: Step3Props) {
+  const [metrosCuadrados, setMetrosCuadrados] = useState(50);
+  const [altura, setAltura] = useState(3);
+  const [exposicionSolar, setExposicionSolar] = useState(1);
 
-  const frigorias = calculateFrigorias(metros, altura, exposicion);
+  const frigoriasCalculadas = calculateFrigorias(metrosCuadrados, altura, exposicionSolar);
 
-  const handleChange = () => {
+  const handleMetrosChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = parseFloat(e.target.value);
+    setMetrosCuadrados(value);
     onUpdate({
-      metrosCuadrados: metros,
+      metrosCuadrados: value,
       altura,
-      exposicionSolar: exposicion,
-      frigoriasCalculadas: frigorias,
+      exposicionSolar,
+      frigoriasCalculadas: calculateFrigorias(value, altura, exposicionSolar),
+    });
+  };
+
+  const handleAlturaChange = (alt: number) => {
+    setAltura(alt);
+    onUpdate({
+      metrosCuadrados,
+      altura: alt,
+      exposicionSolar,
+      frigoriasCalculadas: calculateFrigorias(metrosCuadrados, alt, exposicionSolar),
+    });
+  };
+
+  const handleExposicionChange = (exp: number) => {
+    setExposicionSolar(exp);
+    onUpdate({
+      metrosCuadrados,
+      altura,
+      exposicionSolar: exp,
+      frigoriasCalculadas: calculateFrigorias(metrosCuadrados, altura, exp),
     });
   };
 
   return (
-    <div className="w-full max-w-3xl mx-auto">
-      <h2 className="text-3xl font-bold text-gray-900 mb-4 text-center">
-        {t('paso3.title', language)}
-      </h2>
-      <p className="text-gray-600 text-center mb-12">
-        {t('paso3.subtitle', language)}
-      </p>
+    <div className="w-full max-w-4xl mx-auto animate-fadeInUp">
+      <div className="mb-12 text-center">
+        <h2 className="text-4xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent mb-4">
+          {t('paso3.title', language)}
+        </h2>
+        <p className="text-gray-600 text-lg">
+          {t('paso3.subtitle', language)}
+        </p>
+      </div>
 
-      <div className="bg-white p-6 rounded-lg border border-gray-200 space-y-8">
-        {/* Metros cuadrados */}
-        <div>
-          <label className="block text-sm font-semibold text-gray-900 mb-4">
-            {t('paso3.metros', language)}: {metros} m²
-          </label>
+      <div className="bg-white rounded-2xl shadow-card p-8 space-y-8">
+        {/* Métros Cuadrados */}
+        <div className="space-y-4">
+          <div className="flex justify-between items-center">
+            <label className="text-lg font-bold text-gray-900">
+              {t('paso3.metros', language)}
+            </label>
+            <span className="text-3xl font-bold text-blue-600">{Math.round(metrosCuadrados)} m²</span>
+          </div>
           <input
             type="range"
             min="5"
             max="150"
-            step="5"
-            value={metros}
-            onChange={(e) => setMetros(parseInt(e.target.value, 10))}
-            onChangeCapture={handleChange}
-            className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+            value={metrosCuadrados}
+            onChange={handleMetrosChange}
+            className="w-full"
+            style={{ '--value': `${((metrosCuadrados - 5) / (150 - 5)) * 100}%` } as React.CSSProperties}
           />
-          <div className="flex justify-between text-xs text-gray-500 mt-2">
+          <div className="flex justify-between text-xs text-gray-500">
             <span>5 m²</span>
             <span>150 m²</span>
           </div>
         </div>
 
         {/* Altura */}
-        <div>
-          <label className="block text-sm font-semibold text-gray-900 mb-4">
+        <div className="space-y-4">
+          <label className="text-lg font-bold text-gray-900 block">
             {t('paso3.altura', language)}
           </label>
-          <div className="flex gap-4">
+          <div className="grid grid-cols-3 gap-4">
             {[
-              { value: 2.5, label: 'paso3.altura.baja' },
-              { value: 3, label: 'paso3.altura.media' },
-              { value: 4, label: 'paso3.altura.alta' },
-            ].map((h) => (
+              { value: 2.5, label: '2.5m' },
+              { value: 3, label: '3m' },
+              { value: 4, label: '4m' },
+            ].map((option) => (
               <button
-                key={h.value}
-                onClick={() => {
-                  setAltura(h.value);
-                  onUpdate({
-                    metrosCuadrados: metros,
-                    altura: h.value,
-                    exposicionSolar: exposicion,
-                    frigoriasCalculadas: calculateFrigorias(metros, h.value, exposicion),
-                  });
-                }}
-                className={`px-4 py-2 rounded-lg border-2 transition-all ${
-                  altura === h.value
-                    ? 'border-blue-500 bg-blue-50'
-                    : 'border-gray-200 bg-gray-50 hover:border-gray-300'
+                key={option.value}
+                onClick={() => handleAlturaChange(option.value)}
+                className={`p-4 rounded-xl font-bold transition-all duration-300 ${
+                  altura === option.value
+                    ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-elevated'
+                    : 'bg-gray-100 text-gray-900 card-hover'
                 }`}
               >
-                {t(h.label as any, language)}
+                {option.label}
               </button>
             ))}
           </div>
         </div>
 
-        {/* Exposición solar */}
-        <div>
-          <label className="block text-sm font-semibold text-gray-900 mb-4">
+        {/* Exposición Solar */}
+        <div className="space-y-4">
+          <label className="text-lg font-bold text-gray-900 block">
             {t('paso3.exposicion', language)}
           </label>
-          <div className="flex gap-4">
+          <div className="grid grid-cols-2 gap-4">
             {[
-              { value: 1.0, label: 'paso3.exposicion.normal' },
-              { value: 1.2, label: 'paso3.exposicion.soleado' },
-            ].map((e) => (
+              { value: 1, label: 'Normal (100%)' },
+              { value: 1.2, label: 'Muy soleado (120%)' },
+            ].map((option) => (
               <button
-                key={e.value}
-                onClick={() => {
-                  setExposicion(e.value);
-                  onUpdate({
-                    metrosCuadrados: metros,
-                    altura,
-                    exposicionSolar: e.value,
-                    frigoriasCalculadas: calculateFrigorias(metros, altura, e.value),
-                  });
-                }}
-                className={`px-4 py-2 rounded-lg border-2 transition-all ${
-                  exposicion === e.value
-                    ? 'border-blue-500 bg-blue-50'
-                    : 'border-gray-200 bg-gray-50 hover:border-gray-300'
+                key={option.value}
+                onClick={() => handleExposicionChange(option.value)}
+                className={`p-4 rounded-xl font-bold transition-all duration-300 ${
+                  exposicionSolar === option.value
+                    ? 'bg-gradient-to-r from-amber-500 to-amber-600 text-white shadow-elevated'
+                    : 'bg-gray-100 text-gray-900 card-hover'
                 }`}
               >
-                {t(e.label as any, language)}
+                {option.label}
               </button>
             ))}
           </div>
         </div>
 
-        {/* Cálculo de frigorías */}
-        <div className="bg-blue-50 p-4 rounded-lg border-2 border-blue-200">
-          <p className="text-sm text-gray-600 mb-1">
-            {t('paso3.frigoriasCalculadas', language)}
+        {/* Resultado */}
+        <div className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl p-6 border-2 border-green-200">
+          <p className="text-gray-600 font-semibold mb-2">Frigorias calculadas</p>
+          <p className="text-4xl font-bold text-green-600">
+            {Math.round(frigoriasCalculadas).toLocaleString()}
           </p>
-          <p className="text-3xl font-bold text-blue-600">
-            {frigorias.toLocaleString()} fg
-          </p>
+          <p className="text-sm text-gray-500 mt-2">Capacidad recomendada para tu espacio</p>
         </div>
       </div>
     </div>

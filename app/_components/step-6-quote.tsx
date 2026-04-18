@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import type { Language, Equipment } from '@/app/types';
 import { t } from '@/app/utils/translations';
 import { formatCurrency, isValidMaillorquinPostalCode } from '@/app/utils/calculations';
@@ -68,121 +69,214 @@ export function Step6Quote({ language, model, precio, onSubmit }: Step6Props) {
   };
 
   return (
-    <div className="w-full max-w-4xl mx-auto">
-      <h2 className="text-3xl font-bold text-gray-900 mb-4 text-center">
-        {t('paso6.title', language)}
-      </h2>
+    <div className="w-full max-w-6xl mx-auto animate-fadeInUp">
+      <div className="mb-12 text-center">
+        <h2 className="text-5xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent mb-4">
+          {t('paso6.title', language)}
+        </h2>
+        <p className="text-gray-600 text-lg">Revisa tu presupuesto y completa tu solicitud</p>
+      </div>
 
-      <div className="space-y-6">
-        {/* Resumen */}
-        <div className="bg-white p-6 rounded-lg border-2 border-gray-200">
-          <h3 className="text-lg font-bold text-gray-900 mb-4">
-            {t('paso6.resumen', language)}
-          </h3>
-          <p className="text-gray-600 mb-2">
-            {t('paso6.suministro', language)}: {model.marca} {model.modelo}
-          </p>
-          <p className="text-sm text-gray-600 mb-4">{model.descripcion}</p>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        {/* Columna izquierda - Resumen del modelo */}
+        <div className="lg:col-span-1">
+          <div className="bg-white rounded-2xl shadow-card overflow-hidden sticky top-8">
+            {/* Imagen del modelo */}
+            <div className="relative w-full h-72 bg-gradient-to-b from-white to-gray-50 flex items-center justify-center overflow-hidden">
+              {model.imagen && (
+                <Image
+                  src={model.imagen}
+                  alt={model.modelo}
+                  fill
+                  className="object-contain p-6"
+                  sizes="(max-width: 1200px) 100vw, 33vw"
+                />
+              )}
+            </div>
 
-          <div className="border-t-2 border-gray-200 pt-4 mt-4">
-            <div className="flex justify-between py-2 text-gray-600">
-              <span>{t('paso6.subtotal', language)}:</span>
-              <span>{formatCurrency(precio.subtotal)}</span>
-            </div>
-            <div className="flex justify-between py-2 text-gray-600">
-              <span>{t('paso6.iva', language)}:</span>
-              <span>{formatCurrency(precio.iva)}</span>
-            </div>
-            {precio.descuentoMonto > 0 && (
-              <div className="flex justify-between py-2 text-red-600">
-                <span>{t('paso6.descuento', language)}:</span>
-                <span>-{formatCurrency(precio.descuentoMonto)}</span>
+            {/* Info del modelo */}
+            <div className="p-6 space-y-4 border-t border-gray-100">
+              <div>
+                <p className="text-xs text-gray-500 font-semibold uppercase mb-1">Marca</p>
+                <p className="text-xl font-bold text-gray-900">{model.marca}</p>
               </div>
-            )}
-            <div className="flex justify-between py-2 text-lg font-bold text-gray-900 border-t border-gray-200 mt-2">
-              <span>{t('paso6.total', language)}:</span>
-              <span className="text-blue-600">{formatCurrency(precio.totalFinal)}</span>
+
+              <div>
+                <p className="text-xs text-gray-500 font-semibold uppercase mb-1">Modelo</p>
+                <p className="text-sm text-gray-700 font-medium">{model.modelo}</p>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3 pt-4 border-t border-gray-100">
+                <div className="bg-blue-50 rounded-lg p-3 text-center">
+                  <p className="text-xs text-gray-600 mb-1">Frigorias</p>
+                  <p className="font-bold text-blue-600 text-sm">{model.frigoriasMin.toLocaleString()}</p>
+                </div>
+                <div className="bg-purple-50 rounded-lg p-3 text-center">
+                  <p className="text-xs text-gray-600 mb-1">Potencia</p>
+                  <p className="font-bold text-purple-600 text-sm">{model.kW} kW</p>
+                </div>
+                <div className="bg-green-50 rounded-lg p-3 text-center">
+                  <p className="text-xs text-gray-600 mb-1">Eficiencia</p>
+                  <p className="font-bold text-green-600 text-sm">{model.eficiencia}</p>
+                </div>
+                <div className="bg-amber-50 rounded-lg p-3 text-center">
+                  <p className="text-xs text-gray-600 mb-1">Garantia</p>
+                  <p className="font-bold text-amber-600 text-sm">{model.garantia}</p>
+                </div>
+              </div>
+
+              <p className="text-xs text-gray-600 leading-relaxed pt-4 border-t border-gray-100">
+                {model.descripcion}
+              </p>
             </div>
           </div>
         </div>
 
-        {/* Countdown */}
-        <CountdownTimer
-          totalPrice={precio.subtotal + precio.iva}
-          discountPercentage={precio.descuentoPorcentaje}
-          discountedPrice={precio.totalFinal}
-        />
+        {/* Columna derecha - Presupuesto y formulario */}
+        <div className="lg:col-span-2 space-y-6">
+          {/* Desglose de precios */}
+          <div className="bg-white rounded-2xl shadow-card p-8">
+            <h3 className="text-2xl font-bold text-gray-900 mb-6">Desglose del presupuesto</h3>
 
-        {/* Formulario */}
-        <form onSubmit={handleSubmit} className="bg-white p-6 rounded-lg border-2 border-gray-200 space-y-4">
-          <h3 className="text-lg font-bold text-gray-900">{t('paso6.formulario', language)}</h3>
+            <div className="space-y-3 mb-6">
+              <div className="flex justify-between items-center pb-3 border-b border-gray-200">
+                <span className="text-gray-700">Equipo</span>
+                <span className="font-semibold text-gray-900">{formatCurrency(precio.precioEquipo)}</span>
+              </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <input
-              type="text"
-              placeholder={t('paso6.nombre', language)}
-              value={formData.nombre}
-              onChange={(e) => setFormData({ ...formData, nombre: e.target.value })}
-              className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              required
-            />
-            <input
-              type="tel"
-              placeholder={t('paso6.telefono', language)}
-              value={formData.telefono}
-              onChange={(e) => setFormData({ ...formData, telefono: e.target.value })}
-              className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              required
-            />
-          </div>
+              {precio.precioInstalacion > 0 && (
+                <div className="flex justify-between items-center pb-3 border-b border-gray-200">
+                  <span className="text-gray-700">Instalacion</span>
+                  <span className="font-semibold text-gray-900">{formatCurrency(precio.precioInstalacion)}</span>
+                </div>
+              )}
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <input
-                type="text"
-                placeholder={t('paso6.codigoPostal', language)}
-                value={formData.codigoPostal}
-                onChange={handleCPChange}
-                className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 ${
-                  cpError ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 focus:ring-blue-500'
-                }`}
-                required
-              />
-              {cpError && <p className="text-xs text-red-600 mt-1">{t('paso6.invalidoMallorca', language)}</p>}
+              {precio.precioAndamio > 0 && (
+                <div className="flex justify-between items-center pb-3 border-b border-gray-200">
+                  <span className="text-gray-700">Andamio</span>
+                  <span className="font-semibold text-gray-900">{formatCurrency(precio.precioAndamio)}</span>
+                </div>
+              )}
+
+              {precio.precioUrgencia > 0 && (
+                <div className="flex justify-between items-center pb-3 border-b border-gray-200">
+                  <span className="text-gray-700">Urgencia 72h</span>
+                  <span className="font-semibold text-gray-900">{formatCurrency(precio.precioUrgencia)}</span>
+                </div>
+              )}
+
+              {precio.precioMetrosAdicionales > 0 && (
+                <div className="flex justify-between items-center pb-3 border-b border-gray-200">
+                  <span className="text-gray-700">Metros adicionales</span>
+                  <span className="font-semibold text-gray-900">{formatCurrency(precio.precioMetrosAdicionales)}</span>
+                </div>
+              )}
+
+              <div className="flex justify-between items-center py-3 bg-blue-50 px-4 rounded-lg">
+                <span className="text-gray-700 font-semibold">Subtotal</span>
+                <span className="font-bold text-blue-600 text-lg">{formatCurrency(precio.subtotal)}</span>
+              </div>
+
+              <div className="flex justify-between items-center py-3 bg-purple-50 px-4 rounded-lg">
+                <span className="text-gray-700 font-semibold">IVA (21%)</span>
+                <span className="font-bold text-purple-600 text-lg">{formatCurrency(precio.iva)}</span>
+              </div>
+
+              {precio.descuentoMonto > 0 && (
+                <div className="flex justify-between items-center py-3 bg-green-50 px-4 rounded-lg border-2 border-green-300">
+                  <span className="text-green-700 font-semibold">Descuento ({precio.descuentoPorcentaje}%)</span>
+                  <span className="font-bold text-green-600 text-lg">-{formatCurrency(precio.descuentoMonto)}</span>
+                </div>
+              )}
             </div>
-            <input
-              type="text"
-              placeholder={t('paso6.direccion', language)}
-              value={formData.direccion}
-              onChange={(e) => setFormData({ ...formData, direccion: e.target.value })}
-              className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              required
-            />
+
+            {/* Total final */}
+            <div className="bg-gradient-to-r from-green-500 to-emerald-600 rounded-xl p-6 text-white">
+              <p className="text-sm font-semibold opacity-90 mb-2">TOTAL A PAGAR</p>
+              <p className="text-4xl font-bold">{formatCurrency(precio.totalFinal)}</p>
+            </div>
           </div>
 
-          <input
-            type="email"
-            placeholder={t('paso6.email', language)}
-            value={formData.email}
-            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            required
+          {/* Countdown */}
+          <CountdownTimer
+            totalPrice={precio.subtotal + precio.iva}
+            discountPercentage={precio.descuentoPorcentaje}
+            discountedPrice={precio.totalFinal}
           />
 
-          <div className="flex gap-3 pt-4">
+          {/* Formulario */}
+          <form onSubmit={handleSubmit} className="bg-white rounded-2xl shadow-card p-8 space-y-4">
+            <h3 className="text-xl font-bold text-gray-900 mb-6">Datos de contacto</h3>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <input
+                type="text"
+                placeholder="Nombre completo"
+                value={formData.nombre}
+                onChange={(e) => setFormData({ ...formData, nombre: e.target.value })}
+                className="px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-400 transition-all"
+                required
+              />
+              <input
+                type="tel"
+                placeholder="Telefono"
+                value={formData.telefono}
+                onChange={(e) => setFormData({ ...formData, telefono: e.target.value })}
+                className="px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-400 transition-all"
+                required
+              />
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <input
+                  type="text"
+                  placeholder="Codigo Postal Mallorca"
+                  value={formData.codigoPostal}
+                  onChange={handleCPChange}
+                  className={`w-full px-4 py-3 border-2 rounded-lg transition-all ${
+                    cpError ? 'border-red-500 focus:ring-red-400' : 'border-gray-200 focus:ring-blue-400'
+                  } focus:ring-2`}
+                  required
+                />
+                {cpError && <p className="text-xs text-red-600 mt-2 font-semibold">Codigo Postal invalido. Usa 07001-07999</p>}
+              </div>
+              <input
+                type="text"
+                placeholder="Direccion"
+                value={formData.direccion}
+                onChange={(e) => setFormData({ ...formData, direccion: e.target.value })}
+                className="px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-400 transition-all"
+                required
+              />
+            </div>
+
+            <input
+              type="email"
+              placeholder="Email"
+              value={formData.email}
+              onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+              className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-400 transition-all"
+              required
+            />
+
             <button
               type="submit"
               disabled={!isFormValid || submitted}
-              className={`flex-1 px-6 py-3 rounded-lg font-semibold transition-all ${
+              className={`w-full px-6 py-4 rounded-lg font-bold text-lg transition-all duration-300 mt-6 ${
                 isFormValid && !submitted
-                  ? 'bg-green-500 text-white hover:bg-green-600'
+                  ? 'bg-gradient-to-r from-green-500 to-emerald-600 text-white hover:shadow-elevated transform hover:scale-105'
                   : 'bg-gray-300 text-gray-500 cursor-not-allowed'
               }`}
             >
-              {submitted ? '✓ Enviado' : t('paso6.pagar', language)}
+              {submitted ? '✓ Presupuesto enviado' : 'Solicitar presupuesto'}
             </button>
-          </div>
-        </form>
+
+            <p className="text-xs text-gray-500 text-center pt-4">
+              Nos pondremos en contacto en las proximas 24 horas para confirmar tu solicitud.
+            </p>
+          </form>
+        </div>
       </div>
     </div>
   );
