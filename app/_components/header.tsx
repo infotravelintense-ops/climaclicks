@@ -27,22 +27,6 @@ interface HeaderProps {
   onLanguageChange?: (lang: Language) => void;
 }
 
-const navLinks = [
-  { href: '#presupuesto', label: 'Calculadora' },
-  { href: '#contacto', label: 'Contacto' },
-];
-
-const smoothScroll = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
-  e.preventDefault();
-  const el = document.querySelector(href);
-  if (el) {
-    const top = el.getBoundingClientRect().top + window.scrollY - 120;
-    window.scrollTo({ top, behavior: 'smooth' });
-  } else if (href === '#presupuesto') {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }
-};
-
 const stepColors: Record<number, string> = {
   1: 'from-blue-600 to-blue-800',
   2: 'from-indigo-600 to-indigo-800',
@@ -57,25 +41,8 @@ export function Header({ language, currentStep, stepNames, onLanguageChange }: H
 
   return (
     <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-md shadow-sm border-b border-gray-100">
-      {/* Banner superior: Banderas + Mensaje Mallorca (en TODAS las páginas) */}
-      <div className="bg-gradient-to-r from-blue-900 via-blue-800 to-cyan-800 text-white">
-        <div className="max-w-7xl mx-auto px-4 py-2.5 flex flex-col items-center gap-2">
-          {/* Banderas de idioma ENCIMA */}
-          {onLanguageChange && (
-            <div className="flex items-center justify-center">
-              <LanguageSelector current={language} onChange={onLanguageChange} compact />
-            </div>
-          )}
-          {/* Mensaje Mallorca DEBAJO */}
-          <div className="flex items-center gap-2 text-xs sm:text-sm font-semibold tracking-wide">
-            <MapPin className="w-4 h-4 text-cyan-300" />
-            <span>Servicio de climatización disponible en Mallorca</span>
-          </div>
-        </div>
-      </div>
-
       {/* Top bar con info de contacto (solo escritorio) */}
-      <div className="hidden md:block bg-slate-900 text-white text-xs border-t border-white/10">
+      <div className="hidden md:block bg-slate-900 text-white text-xs">
         <div className="max-w-7xl mx-auto px-6 py-1.5 flex items-center justify-between">
           <div className="flex items-center gap-6">
             <a href="tel:+34971123456" className="flex items-center gap-1.5 hover:text-cyan-300 transition-colors">
@@ -96,7 +63,7 @@ export function Header({ language, currentStep, stepNames, onLanguageChange }: H
         </div>
       </div>
 
-      {/* Main navbar */}
+      {/* Main navbar: Logo + Banderas + CTA (donde antes estaba Calculadora/Contacto) */}
       <div className="max-w-7xl mx-auto px-6 py-4">
         <div className="flex items-center justify-between gap-6">
           {/* Logo */}
@@ -104,19 +71,12 @@ export function Header({ language, currentStep, stepNames, onLanguageChange }: H
             <Logo size="md" showText={true} />
           </Link>
 
-          {/* Nav desktop */}
-          <nav className="hidden lg:flex items-center gap-1">
-            {navLinks.map((link) => (
-              <a
-                key={link.href}
-                href={link.href}
-                onClick={(e) => smoothScroll(e, link.href)}
-                className="px-4 py-2 text-sm font-semibold text-gray-700 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
-              >
-                {link.label}
-              </a>
-            ))}
-          </nav>
+          {/* Banderas de idioma (centradas donde antes había enlaces Calculadora/Contacto) */}
+          {onLanguageChange && (
+            <div className="hidden md:flex flex-1 justify-center">
+              <LanguageSelector current={language} onChange={onLanguageChange} compact />
+            </div>
+          )}
 
           {/* CTA */}
           <div className="flex items-center gap-3">
@@ -136,30 +96,27 @@ export function Header({ language, currentStep, stepNames, onLanguageChange }: H
         </div>
       </div>
 
-      {/* Mobile menu */}
+      {/* Franja con mensaje de Mallorca (DEBAJO de las banderas) */}
+      <div className="bg-gradient-to-r from-blue-900 via-blue-800 to-cyan-800 text-white">
+        <div className="max-w-7xl mx-auto px-4 py-2 flex items-center justify-center gap-2 text-xs sm:text-sm font-semibold tracking-wide">
+          <MapPin className="w-4 h-4 text-cyan-300" />
+          <span>Servicio de climatización disponible en Mallorca</span>
+        </div>
+      </div>
+
+      {/* Mobile menu - banderas de idioma */}
       <AnimatePresence>
-        {mobileOpen && (
+        {mobileOpen && onLanguageChange && (
           <motion.div
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: 'auto', opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
-            className="lg:hidden border-t border-gray-100 overflow-hidden"
+            className="lg:hidden border-t border-gray-100 overflow-hidden bg-white"
           >
-            <nav className="max-w-7xl mx-auto px-6 py-4 flex flex-col gap-1">
-              {navLinks.map((link) => (
-                <a
-                  key={link.href}
-                  href={link.href}
-                  onClick={(e) => {
-                    smoothScroll(e, link.href);
-                    setMobileOpen(false);
-                  }}
-                  className="px-4 py-3 text-sm font-semibold text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg"
-                >
-                  {link.label}
-                </a>
-              ))}
-            </nav>
+            <div className="max-w-7xl mx-auto px-6 py-4 flex flex-col items-center gap-3">
+              <span className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Idioma</span>
+              <LanguageSelector current={language} onChange={(lang) => { onLanguageChange(lang); setMobileOpen(false); }} compact />
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
@@ -271,13 +228,50 @@ export function Footer({ language }: { language: Language }) {
             </ul>
           </div>
 
-          {/* Columna 3: Enlaces rápidos */}
+          {/* Columna 3: Enlaces a web oficial */}
           <div>
             <h4 className="font-bold text-lg mb-4 text-white">Enlaces</h4>
             <ul className="space-y-2.5 text-gray-400 text-sm">
-              <li><a href="#presupuesto" className="hover:text-cyan-300 transition-colors">Calculadora de presupuesto</a></li>
-              <li><a href="tel:+34971123456" className="hover:text-cyan-300 transition-colors">Llamar ahora</a></li>
-              <li><a href="mailto:info@climaya.es" className="hover:text-cyan-300 transition-colors">Escríbenos</a></li>
+              <li>
+                <a
+                  href="https://mantenimentscostanord.com/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-cyan-300 transition-colors"
+                >
+                  Sobre nosotros
+                </a>
+              </li>
+              <li>
+                <a
+                  href="https://mantenimentscostanord.com/servicios/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-cyan-300 transition-colors"
+                >
+                  Servicios
+                </a>
+              </li>
+              <li>
+                <a
+                  href="https://mantenimentscostanord.com/trabajos-realizados/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-cyan-300 transition-colors"
+                >
+                  Trabajos realizados
+                </a>
+              </li>
+              <li>
+                <a
+                  href="https://mantenimentscostanord.com/contacto/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-cyan-300 transition-colors"
+                >
+                  Contacto
+                </a>
+              </li>
               <li><a href="/admin" className="hover:text-cyan-300 transition-colors">Área interna</a></li>
             </ul>
           </div>
