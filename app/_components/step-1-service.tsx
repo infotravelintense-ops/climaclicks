@@ -15,7 +15,7 @@ interface Step1Props {
 const serviceImages: Record<string, string> = {
   'sustitución': '/servicios/sustitucion.png',
   'instalacion': '/servicios/instalacion.png',
-  'averia': '/servicios/reparacion.png',
+  'reparacion': '/servicios/reparacion.png',
   'proyecto': '/servicios/proyecto.png',
   'teknopoint': '/servicios/teknopoint.png',
 };
@@ -23,7 +23,7 @@ const serviceImages: Record<string, string> = {
 const serviceAlt: Record<string, string> = {
   'sustitución': 'Técnico sustituyendo un aire acondicionado antiguo por uno nuevo',
   'instalacion': 'Dos técnicos instalando un aire acondicionado split en el salón',
-  'averia': 'Técnico reparando un aire acondicionado averiado',
+  'reparacion': 'Técnico reparando un aire acondicionado averiado',
   'proyecto': 'Ingeniero revisando planos de un proyecto de climatización',
   'teknopoint': 'Sistema Tekno Point para edificios históricos y cascos antiguos',
 };
@@ -40,7 +40,7 @@ export function Step1Service({ language, onSelectService, selectedService }: Ste
   const services = [
     { id: 'sustitución', titleKey: 'paso1.sustitucion', descKey: 'paso1.sustitucion.desc' },
     { id: 'instalacion', titleKey: 'paso1.instalacion', descKey: 'paso1.instalacion.desc' },
-    { id: 'averia', titleKey: 'paso1.averia', descKey: 'paso1.averia.desc' },
+    { id: 'reparacion', titleKey: 'paso1.reparacion', descKey: 'paso1.reparacion.desc' },
     { id: 'proyecto', titleKey: 'paso1.proyecto', descKey: 'paso1.proyecto.desc' },
   ];
 

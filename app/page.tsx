@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import type { Language, ServiceType, EquipmentType, Equipment } from '@/app/types';
 import { t } from '@/app/utils/translations';
 import {
@@ -29,6 +30,7 @@ const STEP_NAMES: Record<Language, string[]> = {
 };
 
 export default function Home() {
+  const router = useRouter();
   const [currentStep, setCurrentStep] = useState(1);
   const [language, setLanguage] = useState<Language>('es');
   // Recomendados Giatsu (Sakura / Aroma 3 / Aroma Plus) mostrados en paso 4
@@ -100,9 +102,12 @@ export default function Home() {
   // Avance automático al seleccionar servicio en Paso 1
   const handleServiceSelect = (service: ServiceType) => {
     setQuoteData({ ...quoteData, tipoServicio: service });
-    if (service === 'averia' || service === 'proyecto') {
-      // Flujo B - TODO: implementar
-      console.log('Flujo rápido:', service);
+    if (service === 'reparacion') {
+      router.push('/pago-reparacion');
+      return;
+    }
+    if (service === 'proyecto') {
+      router.push('/proyecto');
       return;
     }
     setTimeout(() => {

@@ -11,14 +11,14 @@ interface Step2Props {
 }
 
 const equipmentImages: Record<string, string> = {
-  'split': 'https://www.general-hvac.com/shared/eu/img-g000-product-split-wall-kjcal-top-01.png',
-  'multisplit': 'https://www.lg.com/cac/images/business/multi-split/lg-hvac-multi-split-what-is-thumb-m.jpg',
-  'conducto': 'https://media.adeo.com/media/2360824/media.jpg',
-  'casete': 'https://img.archiexpo.es/images_ae/photo-g/150633-9748816.jpg',
-  'suelo-techo': 'https://www.hisense.es/wp-content/uploads/2019/06/AUV90UR4RB4-AUV105UR4RB4-1.png',
-  'twin': 'https://cdn.abacus.ai/images/ef31bd74-eb2b-4c68-873c-72759c96a6ab.png',
-  'multi-conducto': 'https://media.adeo.com/media/2360824/media.jpg',
-  'multi-casete': 'https://img.archiexpo.es/images_ae/photo-g/150633-9748816.jpg',
+  'split': 'https://cdn.abacus.ai/images/8a02ead9-8032-4696-878a-b48b336fc562.png',
+  'multisplit': 'https://cdn.abacus.ai/images/f8f09cb5-136d-40a6-afde-9f0c505687c0.png',
+  'conducto': 'https://cdn.abacus.ai/images/75518ea8-a758-46fc-ad68-7ef9c8db1dd9.png',
+  'casete': 'https://cdn.abacus.ai/images/75518ea8-a758-46fc-ad68-7ef9c8db1dd9.png',
+  'suelo-techo': 'https://cdn.abacus.ai/images/a77a0617-69f2-43df-8768-5f34edf9e0ac.png',
+  'twin': 'https://cdn.abacus.ai/images/a77a0617-69f2-43df-8768-5f34edf9e0ac.png',
+  'multi-conducto': 'https://cdn.abacus.ai/images/75518ea8-a758-46fc-ad68-7ef9c8db1dd9.png',
+  'multi-casete': 'https://cdn.abacus.ai/images/75518ea8-a758-46fc-ad68-7ef9c8db1dd9.png',
 };
 
 export function Step2Equipment({ language, onSelectEquipment, selectedEquipment }: Step2Props) {

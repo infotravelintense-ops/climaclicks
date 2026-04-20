@@ -2,7 +2,7 @@
 
 export type Language = 'es' | 'en' | 'de' | 'it' | 'hu';
 
-export type ServiceType = 'sustitución' | 'instalacion' | 'averia' | 'proyecto';
+export type ServiceType = 'sustitución' | 'instalacion' | 'reparacion' | 'proyecto';
 
 export type EquipmentType = 
   | 'split'
