@@ -1,6 +1,6 @@
 'use client';
 
-import type { Language } from '@/app/types';
+import type { Language, EquipmentType } from '@/app/types';
 import {
   formatCurrency,
   isHighSeason,
@@ -9,39 +9,78 @@ import {
   ANDAMIO_PRICE,
 } from '@/app/utils/calculations';
 import { useState } from 'react';
-import { Ruler, Construction, Zap, Check, Circle, Info } from 'lucide-react';
+import { Ruler, Construction, Zap, Check, Circle, Info, Pickaxe } from 'lucide-react';
 
 interface Step5Props {
   language: Language;
+  tipoEquipo: EquipmentType | null;
   onUpdate: (data: {
     andamio: boolean;
     urgencia: boolean;
     metrosAdicionalesCount: number;
+    conductoUnidadesInteriores?: number;
   }) => void;
 }
 
-export function Step5Extras({ language, onUpdate }: Step5Props) {
+export function Step5Extras({ language, tipoEquipo, onUpdate }: Step5Props) {
   const [andamio, setAndamio] = useState(false);
   const [urgencia, setUrgencia] = useState(false);
   const [metrosAdicionalesCount, setMetrosAdicionalesCount] = useState(0);
+  const [conductoUnidadesInteriores, setConducutoUnidadesInteriores] = useState(0);
 
   const isHighSeas = isHighSeason(new Date());
   const urgenciaPrice = getUrgenciaPrice(isHighSeas);
   const metrosPrice = calculateMetrosAdicionalesPrice(metrosAdicionalesCount);
 
+  // Precios para conductos: 1x1=600€, 2x1=1000€, 3x1=1400€, 4x1=1800€
+  const conductoPrecios: Record<number, number> = {
+    0: 0,
+    1: 600,
+    2: 1000,
+    3: 1400,
+    4: 1800,
+  };
+  const conductoPrice = conductoPrecios[conductoUnidadesInteriores] || 0;
+  const isConducto = tipoEquipo === 'conducto';
+
   const handleAndamioChange = (value: boolean) => {
     setAndamio(value);
-    onUpdate({ andamio: value, urgencia, metrosAdicionalesCount });
+    onUpdate({ 
+      andamio: value, 
+      urgencia, 
+      metrosAdicionalesCount,
+      conductoUnidadesInteriores: isConducto ? conductoUnidadesInteriores : undefined,
+    });
   };
 
   const handleUrgenciaChange = (value: boolean) => {
     setUrgencia(value);
-    onUpdate({ andamio, urgencia: value, metrosAdicionalesCount });
+    onUpdate({ 
+      andamio, 
+      urgencia: value, 
+      metrosAdicionalesCount,
+      conductoUnidadesInteriores: isConducto ? conductoUnidadesInteriores : undefined,
+    });
   };
 
   const handleMetrosChange = (value: number) => {
     setMetrosAdicionalesCount(value);
-    onUpdate({ andamio, urgencia, metrosAdicionalesCount: value });
+    onUpdate({ 
+      andamio, 
+      urgencia, 
+      metrosAdicionalesCount: value,
+      conductoUnidadesInteriores: isConducto ? conductoUnidadesInteriores : undefined,
+    });
+  };
+
+  const handleConducutoChange = (value: number) => {
+    setConducutoUnidadesInteriores(value);
+    onUpdate({ 
+      andamio, 
+      urgencia, 
+      metrosAdicionalesCount,
+      conductoUnidadesInteriores: value,
+    });
   };
 
   return (
@@ -117,6 +156,49 @@ export function Step5Extras({ language, onUpdate }: Step5Props) {
             </div>
           </div>
         </button>
+
+        {/* Conductos - Albañilería, pladur y pintura (solo para conductos) */}
+        {isConducto && (
+          <div className="bg-white rounded-2xl shadow-card p-8">
+            <div className="flex items-center gap-4 mb-6">
+              <div className="w-12 h-12 rounded-xl bg-purple-50 flex items-center justify-center text-purple-600 flex-shrink-0">
+                <Pickaxe className="w-6 h-6" strokeWidth={1.5} />
+              </div>
+              <div className="flex-1">
+                <h3 className="text-lg font-bold text-gray-900">
+                  Albañilería, pladur y pintura
+                </h3>
+                <p className="text-xs text-gray-500 mt-1">
+                  Picado de techo, tapado de calas con compuertas y pintado
+                </p>
+              </div>
+            </div>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
+              {[0, 1, 2, 3, 4].map((units) => (
+                <button
+                  key={units}
+                  onClick={() => handleConducutoChange(units)}
+                  className={`py-3 px-4 rounded-xl font-bold transition-all ${
+                    conductoUnidadesInteriores === units
+                      ? 'bg-purple-600 text-white shadow-lg'
+                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  }`}
+                >
+                  {units === 0 ? 'Sin' : `${units}x1`}
+                </button>
+              ))}
+            </div>
+            <div className="text-center">
+              <p className="text-sm text-gray-600 mb-2">Unidades interiores</p>
+              <p className="text-3xl font-bold text-purple-600">
+                {conductoPrice === 0 ? 'Selecciona opción' : formatCurrency(conductoPrice)}
+              </p>
+            </div>
+            <div className="mt-4 pt-4 border-t border-gray-200 text-xs text-gray-500">
+              <p>• 1x1: 600€ | 2x1: 1.000€ | 3x1: 1.400€ | 4x1: 1.800€</p>
+            </div>
+          </div>
+        )}
 
         {/* Instalación urgente */}
         <button

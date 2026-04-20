@@ -1,7 +1,8 @@
 'use client';
 
 import Image from 'next/image';
-import { Snowflake, Zap, ShieldCheck } from 'lucide-react';
+import { Snowflake, Zap, ShieldCheck, AlertTriangle, X } from 'lucide-react';
+import { useState } from 'react';
 import type { Language, Equipment } from '@/app/types';
 
 interface Step4Props {
@@ -9,6 +10,7 @@ interface Step4Props {
   language: Language;
   onSelectModel: (model: Equipment) => void;
   selectedModel: Equipment | null;
+  frigoriasCalculadas?: number;
 }
 
 function getGiatsuLineInfo(modelo: string): { displayName: string; orderIndex: number } | null {
@@ -36,7 +38,20 @@ const CARD_TINT = [
   'from-purple-50/40 to-white',
 ];
 
-export function Step4Models({ models, language, onSelectModel, selectedModel }: Step4Props) {
+export function Step4Models({ models, language, onSelectModel, selectedModel, frigoriasCalculadas = 0 }: Step4Props) {
+  const [showAsesoramiento, setShowAsesoramiento] = useState(false);
+  const [formData, setFormData] = useState({
+    nombre: '',
+    email: '',
+    telefono: '',
+    descripcion: '',
+  });
+
+  // Detectar si frigorías exceden máximo permitido (6000 + 20% = 7200)
+  const MAX_FRIGORIAS = 6000;
+  const MAX_WITH_PLUS = MAX_FRIGORIAS * 1.2; // 7200
+  const exceedsFrigorias = frigoriasCalculadas > MAX_WITH_PLUS;
+
   // Ordenar siempre: Sakura -> Aroma 3 -> Aroma Plus (de más barato a más caro, igual al spec)
   const sorted = [...models]
     .map((m) => ({ model: m, info: getGiatsuLineInfo(m.modelo) }))
@@ -45,6 +60,31 @@ export function Step4Models({ models, language, onSelectModel, selectedModel }: 
     .map((x) => x.model);
 
   const displayModels = sorted.slice(0, 3);
+
+  const handleAsesoramientoSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          tipoServicio: 'asesoramiento_tecnico',
+          nombre: formData.nombre,
+          email: formData.email,
+          telefono: formData.telefono,
+          descripcion: `Solicitud de asesoramiento técnico para instalación. Frigorías requeridas: ${frigoriasCalculadas}. ${formData.descripcion}`,
+        }),
+      });
+      if (response.ok) {
+        alert('Solicitud enviada. Gabriel Guardiola se pondrá en contacto contigo pronto.');
+        setShowAsesoramiento(false);
+        setFormData({ nombre: '', email: '', telefono: '', descripcion: '' });
+      }
+    } catch (error) {
+      console.error('Error submitting asesoramiento:', error);
+      alert('Error al enviar la solicitud');
+    }
+  };
 
   if (displayModels.length === 0) {
     return (
@@ -133,6 +173,134 @@ export function Step4Models({ models, language, onSelectModel, selectedModel }: 
           );
         })}
       </div>
+
+      {/* Aviso si frigorías exceden el máximo */}
+      {exceedsFrigorias && (
+        <div className="mt-8 bg-amber-50 border-2 border-amber-300 rounded-2xl p-6">
+          <div className="flex gap-4 items-start">
+            <AlertTriangle className="w-6 h-6 text-amber-600 flex-shrink-0 mt-0.5" />
+            <div className="flex-1">
+              <h3 className="text-lg font-bold text-amber-900 mb-2">
+                Instalación que requiere asesoramiento experto
+              </h3>
+              <p className="text-amber-800 mb-4">
+                Las frigorías requeridas ({frigoriasCalculadas.toLocaleString()}) exceden el rango estándar de nuestros modelos recomendados. 
+                Para esta instalación es necesario el asesoramiento experto de <strong>Gabriel Guardiola</strong>, nuestro técnico especializado.
+              </p>
+              <p className="text-sm text-amber-700 mb-4">
+                Nos especializamos en instalaciones con conductos de 12.000 BTU, multi-split y multi-conducto con más del 20% adicional de capacidad.
+              </p>
+              <button
+                onClick={() => setShowAsesoramiento(true)}
+                className="px-6 py-3 bg-amber-600 hover:bg-amber-700 text-white font-bold rounded-xl transition-all shadow-lg hover:shadow-xl"
+              >
+                Solicitar asesoramiento técnico
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal de Asesoramiento */}
+      {showAsesoramiento && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl shadow-2xl max-w-lg w-full max-h-screen overflow-y-auto animate-fadeInUp">
+            <div className="sticky top-0 bg-gradient-to-r from-amber-600 to-orange-600 p-6 flex items-center justify-between">
+              <h2 className="text-2xl font-bold text-white">
+                Asesoramiento Técnico
+              </h2>
+              <button
+                onClick={() => setShowAsesoramiento(false)}
+                className="text-white hover:text-amber-100 transition-colors"
+              >
+                <X className="w-6 h-6" />
+              </button>
+            </div>
+
+            <form onSubmit={handleAsesoramientoSubmit} className="p-6 space-y-5">
+              <div>
+                <p className="text-sm text-gray-600 mb-3">
+                  Frigorías requeridas: <strong>{frigoriasCalculadas.toLocaleString()}</strong> (máximo estándar: {MAX_WITH_PLUS.toLocaleString()})
+                </p>
+                <p className="text-sm text-gray-700 mb-4">
+                  Gabriel Guardiola evaluará tu proyecto y te ofrecerá la mejor solución.
+                </p>
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold text-gray-900 mb-2">
+                  Nombre *
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={formData.nombre}
+                  onChange={(e) => setFormData({ ...formData, nombre: e.target.value })}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500"
+                  placeholder="Tu nombre"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold text-gray-900 mb-2">
+                  Teléfono *
+                </label>
+                <input
+                  type="tel"
+                  required
+                  value={formData.telefono}
+                  onChange={(e) => setFormData({ ...formData, telefono: e.target.value })}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500"
+                  placeholder="Tu teléfono"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold text-gray-900 mb-2">
+                  Email *
+                </label>
+                <input
+                  type="email"
+                  required
+                  value={formData.email}
+                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500"
+                  placeholder="tu@email.com"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold text-gray-900 mb-2">
+                  Detalles adicionales
+                </label>
+                <textarea
+                  value={formData.descripcion}
+                  onChange={(e) => setFormData({ ...formData, descripcion: e.target.value })}
+                  rows={4}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 resize-none"
+                  placeholder="Cuéntanos más sobre tu proyecto..."
+                />
+              </div>
+
+              <div className="flex gap-3 pt-4">
+                <button
+                  type="button"
+                  onClick={() => setShowAsesoramiento(false)}
+                  className="flex-1 px-4 py-3 border-2 border-gray-300 rounded-lg font-semibold text-gray-700 hover:bg-gray-50 transition-all"
+                >
+                  Cancelar
+                </button>
+                <button
+                  type="submit"
+                  className="flex-1 px-4 py-3 bg-gradient-to-r from-amber-600 to-orange-600 rounded-lg font-semibold text-white hover:shadow-lg transition-all"
+                >
+                  Enviar solicitud
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

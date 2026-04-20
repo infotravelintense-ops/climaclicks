@@ -18,6 +18,7 @@ interface Step6Props {
     precioAndamio: number;
     precioUrgencia: number;
     precioMetrosAdicionales: number;
+    precioConducto?: number;
     subtotal: number;
     iva: number;
     descuentoPorcentaje: number;
@@ -236,6 +237,12 @@ export function Step6Quote({ language, model, serviceType, alternativeModels, pr
             <div className="flex justify-between items-center text-xs text-gray-500">
               <span>Metros adicionales incluidos</span>
               <span>{formatCurrency(precio.precioMetrosAdicionales)}</span>
+            </div>
+          )}
+          {precio.precioConducto && precio.precioConducto > 0 && (
+            <div className="flex justify-between items-center text-xs text-gray-500">
+              <span>Albañilería, pladur y pintura</span>
+              <span>{formatCurrency(precio.precioConducto)}</span>
             </div>
           )}
           <div className="flex justify-between items-center pt-3 border-t border-gray-200">

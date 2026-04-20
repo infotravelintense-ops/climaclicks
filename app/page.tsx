@@ -50,6 +50,7 @@ export default function Home() {
     andamio: false,
     urgencia72h: false,
     metrosAdicionales: 0,
+    conduutoUnidadesInteriores: 0,
     nombreCliente: '',
     emailCliente: '',
     telefonoCliente: '',
@@ -142,6 +143,9 @@ export default function Home() {
   const handlePrevStep = () => {
     if (currentStep > 1) {
       setCurrentStep(currentStep - 1);
+      if (typeof window !== 'undefined') {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
     }
   };
 
@@ -160,12 +164,16 @@ export default function Home() {
       andamio: false,
       urgencia72h: false,
       metrosAdicionales: 0,
+      conduutoUnidadesInteriores: 0,
       nombreCliente: '',
       emailCliente: '',
       telefonoCliente: '',
       direccionCliente: '',
       codigoPostalCliente: '',
     });
+    if (typeof window !== 'undefined') {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
   };
 
   const handleQuoteSubmit = async (formData: any) => {
@@ -173,6 +181,12 @@ export default function Home() {
       const urgenciaPrice = quoteData.urgencia72h ? getUrgenciaPrice(isHighSeason(new Date())) : 0;
       const andamioPrice = quoteData.andamio ? ANDAMIO_PRICE : 0;
       const metrosPrice = calculateMetrosAdicionalesPrice(quoteData.metrosAdicionales);
+      
+      // Precios para conductos: 1x1=600€, 2x1=1000€, 3x1=1400€, 4x1=1800€
+      const conductoPrecios: Record<number, number> = {
+        0: 0, 1: 600, 2: 1000, 3: 1400, 4: 1800,
+      };
+      const conductoPrice = conductoPrecios[quoteData.conduutoUnidadesInteriores] || 0;
 
       const prices = calculatePrice(
         quoteData.modeloSeleccionado?.precio || 0,
@@ -182,7 +196,8 @@ export default function Home() {
         quoteData.urgencia72h,
         urgenciaPrice,
         quoteData.metrosAdicionales,
-        metrosPrice
+        metrosPrice,
+        conductoPrice
       );
 
       const response = await fetch('/api/quote/create', {
@@ -205,6 +220,8 @@ export default function Home() {
           urgenciaPrice,
           metrosAdicionales: quoteData.metrosAdicionales,
           metrosAdicionalesPrice: metrosPrice,
+          conductoUnidadesInteriores: quoteData.conduutoUnidadesInteriores,
+          conductoPrice,
           ...prices,
           nombreCliente: formData.nombre,
           emailCliente: formData.email,
@@ -227,6 +244,13 @@ export default function Home() {
   const urgenciaPrice = quoteData.urgencia72h ? getUrgenciaPrice(isHighSeason(new Date())) : 0;
   const andamioPrice = quoteData.andamio ? ANDAMIO_PRICE : 0;
   const metrosPrice = calculateMetrosAdicionalesPrice(quoteData.metrosAdicionales);
+  
+  // Precios para conductos: 1x1=600€, 2x1=1000€, 3x1=1400€, 4x1=1800€
+  const conductoPrecios: Record<number, number> = {
+    0: 0, 1: 600, 2: 1000, 3: 1400, 4: 1800,
+  };
+  const conductoPrice = conductoPrecios[quoteData.conduutoUnidadesInteriores] || 0;
+  
   const prices = calculatePrice(
     quoteData.modeloSeleccionado?.precio || 0,
     BASE_INSTALLATION_PRICE,
@@ -235,7 +259,8 @@ export default function Home() {
     quoteData.urgencia72h,
     urgenciaPrice,
     quoteData.metrosAdicionales,
-    metrosPrice
+    metrosPrice,
+    conductoPrice
   );
 
   // Construye lista de alternativas para Paso 6 ordenadas según Canvas:
@@ -336,18 +361,21 @@ export default function Home() {
                 models={recomendados}
                 onSelectModel={handleModelSelect}
                 selectedModel={quoteData.modeloSeleccionado}
+                frigoriasCalculadas={quoteData.frigoriasCalculadas}
               />
             )}
 
             {currentStep === 5 && (
               <Step5Extras
                 language={language}
+                tipoEquipo={quoteData.tipoEquipo}
                 onUpdate={(data) => {
                   setQuoteData({
                     ...quoteData,
                     andamio: data.andamio,
                     urgencia72h: data.urgencia,
                     metrosAdicionales: data.metrosAdicionalesCount,
+                    conduutoUnidadesInteriores: data.conductoUnidadesInteriores || 0,
                   });
                 }}
               />
@@ -365,6 +393,7 @@ export default function Home() {
                   precioAndamio: andamioPrice,
                   precioUrgencia: urgenciaPrice,
                   precioMetrosAdicionales: metrosPrice,
+                  precioConducto: conductoPrice,
                   ...prices,
                 }}
                 onSubmit={handleQuoteSubmit}

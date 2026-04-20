@@ -83,9 +83,10 @@ export function calculatePrice(
   urgencia72h: boolean,
   urgenciaPrice: number,
   metrosAdicionales: number,
-  metrosAdicionalesPrice: number
+  metrosAdicionalesPrice: number,
+  conductoPrice: number = 0
 ): { subtotal: number; iva: number; descuentoPorcentaje: number; descuentoMonto: number; totalFinal: number } {
-  const subtotal = precioEquipo + precioInstalacion + (andamio ? andamioPrice : 0) + (urgencia72h ? urgenciaPrice : 0) + metrosAdicionalesPrice;
+  const subtotal = precioEquipo + precioInstalacion + (andamio ? andamioPrice : 0) + (urgencia72h ? urgenciaPrice : 0) + metrosAdicionalesPrice + conductoPrice;
   const iva = subtotal * 0.21;
   const totalConIva = subtotal + iva;
   const descuentoPorcentaje = getDiscountPercentage(totalConIva);
