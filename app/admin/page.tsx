@@ -91,7 +91,10 @@ export default function AdminPage() {
   const [quotes, setQuotes] = useState<Quote[]>([]);
   const [contacts, setContacts] = useState<Contact[]>([]);
   const [search, setSearch] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [loadingCount, setLoadingCount] = useState(0);
+  const loading = loadingCount > 0;
+  const startLoading = () => setLoadingCount(c => c + 1);
+  const stopLoading = () => setLoadingCount(c => Math.max(0, c - 1));
   const [saveMsg, setSaveMsg] = useState('');
 
   // Check auth on mount
@@ -149,33 +152,42 @@ export default function AdminPage() {
   };
 
   const loadCatalog = async () => {
-    setLoading(true);
+    startLoading();
     try {
       const res = await fetch('/api/admin/catalog');
-      const data = await res.json();
-      if (Array.isArray(data)) setCatalog(data);
+      if (res.ok) {
+        const data = await res.json();
+        if (Array.isArray(data)) setCatalog(data);
+      }
+    } catch (e) {
+      console.error('Error loading catalog:', e);
     } finally {
-      setLoading(false);
+      stopLoading();
     }
   };
 
   const loadConfig = async () => {
-    setLoading(true);
+    startLoading();
     try {
       const res = await fetch('/api/admin/config');
       if (res.ok) {
         const data = await res.json();
         if (data && data.temporadaAltaInicio) setConfig(data);
+        else setConfig({ id: '', temporadaAltaInicio: '15/05', temporadaAltaFin: '15/09', precioUrgenciaAlta: 250, precioUrgenciaBaja: 150, precioAveriaAlta: 120, precioAveriaBaja: 90 });
+      } else {
+        // Fallback defaults when DB not available
+        if (!config) setConfig({ id: '', temporadaAltaInicio: '15/05', temporadaAltaFin: '15/09', precioUrgenciaAlta: 250, precioUrgenciaBaja: 150, precioAveriaAlta: 120, precioAveriaBaja: 90 });
       }
     } catch (e) {
       console.error('Error loading config:', e);
+      if (!config) setConfig({ id: '', temporadaAltaInicio: '15/05', temporadaAltaFin: '15/09', precioUrgenciaAlta: 250, precioUrgenciaBaja: 150, precioAveriaAlta: 120, precioAveriaBaja: 90 });
     } finally {
-      setLoading(false);
+      stopLoading();
     }
   };
 
   const loadQuotes = async () => {
-    setLoading(true);
+    startLoading();
     try {
       const res = await fetch('/api/admin/quotes');
       if (res.ok) {
@@ -185,12 +197,12 @@ export default function AdminPage() {
     } catch (e) {
       console.error('Error loading quotes:', e);
     } finally {
-      setLoading(false);
+      stopLoading();
     }
   };
 
   const loadContacts = async () => {
-    setLoading(true);
+    startLoading();
     try {
       const res = await fetch('/api/admin/contacts');
       if (res.ok) {
@@ -200,7 +212,7 @@ export default function AdminPage() {
     } catch (e) {
       console.error('Error loading contacts:', e);
     } finally {
-      setLoading(false);
+      stopLoading();
     }
   };
 
