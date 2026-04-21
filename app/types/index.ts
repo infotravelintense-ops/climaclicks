@@ -27,6 +27,7 @@ export interface Equipment {
   descripcion: string;
   imagen?: string;
   imagenMarca?: string;
+  fichaTecnica?: string;
 }
 
 export interface QuoteData {

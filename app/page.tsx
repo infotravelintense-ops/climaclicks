@@ -354,6 +354,7 @@ export default function Home() {
             {currentStep === 3 && (
               <Step3Space
                 language={language}
+                equipmentType={quoteData.tipoEquipo}
                 onUpdate={(data) => {
                   setQuoteData({ ...quoteData, ...data });
                 }}

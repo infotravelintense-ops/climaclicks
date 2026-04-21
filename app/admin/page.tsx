@@ -39,6 +39,7 @@ interface Equipment {
   descripcion: string;
   imagen: string;
   imagenMarca: string;
+  fichaTecnica?: string;
 }
 
 interface SeasonConfig {
@@ -259,6 +260,47 @@ export default function AdminPage() {
     const next = [...catalog];
     (next[idx] as any)[field] = value;
     setCatalog(next);
+  };
+
+  const [uploadingFicha, setUploadingFicha] = useState<string | null>(null);
+  const handleFichaUpload = async (modelo: string, file: File) => {
+    setUploadingFicha(modelo);
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('modelo', modelo);
+      const res = await fetch('/api/admin/ficha-upload', { method: 'POST', body: formData });
+      if (res.ok) {
+        const data = await res.json();
+        // Update local catalog state
+        setCatalog(prev => prev.map(eq => eq.modelo === modelo ? { ...eq, fichaTecnica: data.url } : eq));
+        setSaveMsg('Ficha técnica subida ✓');
+        setTimeout(() => setSaveMsg(''), 3000);
+      } else {
+        setSaveMsg('Error al subir ficha');
+      }
+    } catch (e) {
+      setSaveMsg('Error al subir ficha');
+    } finally {
+      setUploadingFicha(null);
+    }
+  };
+
+  const handleFichaDelete = async (modelo: string) => {
+    try {
+      const res = await fetch('/api/admin/ficha-upload', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ modelo }),
+      });
+      if (res.ok) {
+        setCatalog(prev => prev.map(eq => eq.modelo === modelo ? { ...eq, fichaTecnica: undefined } : eq));
+        setSaveMsg('Ficha eliminada ✓');
+        setTimeout(() => setSaveMsg(''), 3000);
+      }
+    } catch (e) {
+      setSaveMsg('Error al eliminar ficha');
+    }
   };
 
   const filteredCatalog = catalog.filter(
@@ -614,6 +656,7 @@ export default function AdminPage() {
                       <th className="text-left px-4 py-3 font-semibold text-gray-700">Precio €</th>
                       <th className="text-left px-4 py-3 font-semibold text-gray-700">Eficiencia</th>
                       <th className="text-left px-4 py-3 font-semibold text-gray-700">Garantía</th>
+                      <th className="text-left px-4 py-3 font-semibold text-gray-700">Ficha Técnica</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -693,6 +736,37 @@ export default function AdminPage() {
                               onChange={(e) => updateEquipmentField(realIdx, 'garantia', e.target.value)}
                               className="w-20 px-2 py-1 border border-gray-200 rounded text-sm focus:ring-1 focus:ring-blue-500 focus:outline-none"
                             />
+                          </td>
+                          <td className="px-4 py-2">
+                            {eq.fichaTecnica ? (
+                              <div className="flex items-center gap-1">
+                                <a href={eq.fichaTecnica} target="_blank" rel="noopener noreferrer" className="text-xs text-green-600 font-medium hover:underline truncate max-w-[80px]" title={eq.fichaTecnica}>
+                                  ✓ Subida
+                                </a>
+                                <button
+                                  onClick={() => handleFichaDelete(eq.modelo)}
+                                  className="text-xs text-red-500 hover:text-red-700 ml-1"
+                                  title="Eliminar ficha"
+                                >
+                                  ✕
+                                </button>
+                              </div>
+                            ) : (
+                              <label className={`inline-flex items-center gap-1 px-2 py-1 text-xs rounded cursor-pointer ${uploadingFicha === eq.modelo ? 'bg-gray-100 text-gray-400' : 'bg-blue-50 text-blue-600 hover:bg-blue-100'}`}>
+                                {uploadingFicha === eq.modelo ? '⏳' : '📎'} Subir
+                                <input
+                                  type="file"
+                                  accept=".pdf,.jpg,.jpeg,.png,.webp"
+                                  className="hidden"
+                                  disabled={uploadingFicha === eq.modelo}
+                                  onChange={(e) => {
+                                    const f = e.target.files?.[0];
+                                    if (f) handleFichaUpload(eq.modelo, f);
+                                    e.target.value = '';
+                                  }}
+                                />
+                              </label>
+                            )}
                           </td>
                         </tr>
                       );

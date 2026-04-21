@@ -91,7 +91,7 @@ body {
 
 /* ==================== CARDS Y CONTENEDORES ==================== */
 .card-hover {
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .card-hover:hover {
@@ -110,7 +110,8 @@ body {
 
 /* ==================== BOTONES ==================== */
 .btn-primary {
-  @apply relative overflow-hidden font-semibold px-6 py-3 rounded-lg transition-all duration-300;
+  @apply relative overflow-hidden font-semibold px-6 py-3 rounded-lg;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
   background: linear-gradient(135deg, #3B82F6 0%, #1E40AF 100%);
   color: white;
   box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
@@ -126,7 +127,8 @@ body {
 }
 
 .btn-secondary {
-  @apply relative overflow-hidden font-semibold px-6 py-3 rounded-lg transition-all duration-300;
+  @apply relative overflow-hidden font-semibold px-6 py-3 rounded-lg;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
   background: linear-gradient(135deg, #10B981 0%, #059669 100%);
   color: white;
   box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
@@ -142,7 +144,8 @@ body {
 }
 
 .btn-outline {
-  @apply relative overflow-hidden font-semibold px-4 py-2 rounded-lg transition-all duration-300;
+  @apply relative overflow-hidden font-semibold px-4 py-2 rounded-lg;
+  transition: transform 0.3s ease, background-color 0.3s ease, color 0.3s ease;
   border: 2px solid #3B82F6;
   color: #3B82F6;
 }
@@ -233,6 +236,4 @@ button:disabled {
 }
 
 /* ==================== TRANSICIONES ==================== */
-* {
-  transition: color 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
-}
+/* Removed global * transition - causes jank on all elements */

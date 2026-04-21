@@ -199,13 +199,34 @@ export function Step6Quote({ language, model, serviceType, alternativeModels, pr
     <div className="w-full max-w-4xl mx-auto animate-fadeInUp space-y-6">
       {/* Botón Descargar Ficha Técnica */}
       <div className="text-center">
-        <button
-          onClick={handleDescargarFicha}
-          className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-cyan-500 hover:bg-cyan-600 text-white font-semibold shadow-card transition-all"
-        >
-          <Download className="w-4 h-4" strokeWidth={2} />
-          Descargar ficha técnica
-        </button>
+        {model.fichaTecnica ? (
+          <a
+            href={model.fichaTecnica}
+            download
+            className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white font-semibold shadow-card"
+            onClick={(e) => {
+              e.preventDefault();
+              const a = document.createElement('a');
+              a.href = model.fichaTecnica!;
+              a.download = `ficha-tecnica-${model.modelo}`;
+              a.target = '_blank';
+              document.body.appendChild(a);
+              a.click();
+              document.body.removeChild(a);
+            }}
+          >
+            <Download className="w-4 h-4" strokeWidth={2} />
+            Descargar ficha técnica
+          </a>
+        ) : (
+          <button
+            onClick={handleDescargarFicha}
+            className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-cyan-500 hover:bg-cyan-600 text-white font-semibold shadow-card"
+          >
+            <Download className="w-4 h-4" strokeWidth={2} />
+            Descargar ficha técnica
+          </button>
+        )}
       </div>
 
       {/* Resumen del presupuesto */}
