@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'Climaya | Aire acondicionado en Mallorca - Presupuesto online en 6 pasos',
+  title: 'ClimayaMallorca | Aire acondicionado en Mallorca - Presupuesto online en 6 pasos',
   description:
     'Calcula tu presupuesto de aire acondicionado en Mallorca en 6 pasos: sustitución, instalación, reparación o proyecto. Empresa instaladora autorizada con más de 15 años de experiencia.',
   keywords: [
@@ -13,10 +13,10 @@ export const metadata: Metadata = {
     'split Mallorca',
     'multisplit Mallorca',
     'reparación aire acondicionado',
-    'Climaya',
+    'ClimayaMallorca',
   ],
   openGraph: {
-    title: 'Climaya | Aire acondicionado en Mallorca',
+    title: 'ClimayaMallorca | Aire acondicionado en Mallorca',
     description:
       'Presupuesto online en 6 pasos para aire acondicionado en Mallorca. Sustitución, nueva instalación, reparación y proyectos.',
     type: 'website',

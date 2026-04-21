@@ -55,7 +55,7 @@ export function Logo({ className = '', showText = true, variant = 'color', size 
     );
   }
 
-  const totalWidth = 180 + (size === 'lg' ? 30 : 0);
+  const totalWidth = 240 + (size === 'lg' ? 40 : 0);
 
   return (
     <svg
@@ -95,7 +95,7 @@ export function Logo({ className = '', showText = true, variant = 'color', size 
         fill={textColor}
         letterSpacing="-0.5"
       >
-        Climaya
+        ClimayaMallorca
       </text>
     </svg>
   );

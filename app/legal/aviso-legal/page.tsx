@@ -2,8 +2,8 @@ import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
 
 export const metadata = {
-  title: 'Aviso Legal · Climaya',
-  description: 'Aviso legal y condiciones de uso del sitio web de Climaya — Manteniments Costa Nord S.L.',
+  title: 'Aviso Legal · ClimayaMallorca',
+  description: 'Aviso legal y condiciones de uso del sitio web de ClimayaMallorca — Manteniments Costa Nord S.L.',
 };
 
 export default function AvisoLegalPage() {
@@ -40,7 +40,7 @@ export default function AvisoLegalPage() {
             <h2 className="text-xl font-bold text-slate-900 mb-2">2. Objeto</h2>
             <p>
               El presente aviso legal regula el uso del sitio web de la calculadora de presupuestos
-              Climaya, propiedad de Manteniments Costa Nord S.L. El acceso y/o uso del sitio web
+              ClimayaMallorca, propiedad de Manteniments Costa Nord S.L. El acceso y/o uso del sitio web
               atribuye la condición de usuario, que acepta, desde dicho acceso y/o uso, las
               condiciones generales aquí reflejadas.
             </p>
