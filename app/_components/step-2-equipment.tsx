@@ -11,14 +11,14 @@ interface Step2Props {
 }
 
 const equipmentImages: Record<string, string> = {
-  'split': 'https://cdn.abacus.ai/images/8a02ead9-8032-4696-878a-b48b336fc562.png',
-  'multisplit': 'https://cdn.abacus.ai/images/f8f09cb5-136d-40a6-afde-9f0c505687c0.png',
-  'conducto': 'https://cdn.abacus.ai/images/75518ea8-a758-46fc-ad68-7ef9c8db1dd9.png',
-  'casete': 'https://cdn.abacus.ai/images/75518ea8-a758-46fc-ad68-7ef9c8db1dd9.png',
-  'suelo-techo': 'https://cdn.abacus.ai/images/a77a0617-69f2-43df-8768-5f34edf9e0ac.png',
-  'twin': 'https://cdn.abacus.ai/images/a77a0617-69f2-43df-8768-5f34edf9e0ac.png',
-  'multi-conducto': 'https://cdn.abacus.ai/images/75518ea8-a758-46fc-ad68-7ef9c8db1dd9.png',
-  'multi-casete': 'https://cdn.abacus.ai/images/75518ea8-a758-46fc-ad68-7ef9c8db1dd9.png',
+  'split': '/servicios/split-pared.jfif',
+  'multisplit': '/servicios/multisplit.jfif',
+  'conducto': '/servicios/conducto.jfif',
+  'casete': '/servicios/casete.jfif',
+  'suelo-techo': '/servicios/suelo-techo.jpeg',
+  'twin': '/servicios/twin-suelo-techo.jfif',
+  'multi-conducto': '/servicios/multiconducto.jfif',
+  'multi-casete': '/servicios/multicasete.jfif',
 };
 
 export function Step2Equipment({ language, onSelectEquipment, selectedEquipment }: Step2Props) {
