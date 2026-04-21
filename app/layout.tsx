@@ -3,6 +3,7 @@ import type { Metadata } from 'next';
 import './globals.css';
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://climaya.adsventas.es'),
   title: 'ClimayaMallorca | Aire acondicionado en Mallorca - Presupuesto online en 6 pasos',
   description:
     'Calcula tu presupuesto de aire acondicionado en Mallorca en 6 pasos: sustitución, instalación, reparación o proyecto. Empresa instaladora autorizada con más de 15 años de experiencia.',
@@ -22,6 +23,20 @@ export const metadata: Metadata = {
       'Presupuesto online en 6 pasos para aire acondicionado en Mallorca. Sustitución, nueva instalación, reparación y proyectos.',
     type: 'website',
     locale: 'es_ES',
+    images: [
+      {
+        url: '/og-image.png',
+        width: 1200,
+        height: 630,
+        alt: 'ClimayaMallorca - Aire acondicionado en Mallorca',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'ClimayaMallorca | Aire acondicionado en Mallorca',
+    description: 'Presupuesto online en 6 pasos para aire acondicionado en Mallorca.',
+    images: ['/og-image.png'],
   },
 };
 

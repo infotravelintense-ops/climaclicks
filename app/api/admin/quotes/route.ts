@@ -1,11 +1,11 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/app/lib/prisma';
-import { isAdminAuthenticated } from '@/app/lib/admin-auth';
+import { isAdminAuthenticatedFromRequest } from '@/app/lib/admin-auth';
 
 export const dynamic = 'force-dynamic';
 
-export async function GET() {
-  if (!isAdminAuthenticated()) {
+export async function GET(req: Request) {
+  if (!isAdminAuthenticatedFromRequest(req)) {
     return NextResponse.json({ error: 'No autorizado' }, { status: 401 });
   }
   try {
@@ -15,6 +15,7 @@ export async function GET() {
     });
     return NextResponse.json(quotes);
   } catch (error) {
+    console.error('Error fetching quotes:', error);
     return NextResponse.json({ error: 'Error obteniendo presupuestos' }, { status: 500 });
   }
 }

@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/app/lib/prisma';
-import { isAdminAuthenticated } from '@/app/lib/admin-auth';
+import { isAdminAuthenticatedFromRequest } from '@/app/lib/admin-auth';
 
 export const dynamic = 'force-dynamic';
 
@@ -13,8 +13,8 @@ const DEFAULT_CONFIG = {
   precioAveriaBaja: 90,
 };
 
-export async function GET() {
-  if (!isAdminAuthenticated()) {
+export async function GET(req: Request) {
+  if (!isAdminAuthenticatedFromRequest(req)) {
     return NextResponse.json({ error: 'No autorizado' }, { status: 401 });
   }
   try {
@@ -30,7 +30,7 @@ export async function GET() {
 }
 
 export async function PUT(req: Request) {
-  if (!isAdminAuthenticated()) {
+  if (!isAdminAuthenticatedFromRequest(req)) {
     return NextResponse.json({ error: 'No autorizado' }, { status: 401 });
   }
   try {

@@ -163,8 +163,12 @@ export default function AdminPage() {
     setLoading(true);
     try {
       const res = await fetch('/api/admin/config');
-      const data = await res.json();
-      if (data) setConfig(data);
+      if (res.ok) {
+        const data = await res.json();
+        if (data && data.temporadaAltaInicio) setConfig(data);
+      }
+    } catch (e) {
+      console.error('Error loading config:', e);
     } finally {
       setLoading(false);
     }
@@ -174,8 +178,12 @@ export default function AdminPage() {
     setLoading(true);
     try {
       const res = await fetch('/api/admin/quotes');
-      const data = await res.json();
-      if (Array.isArray(data)) setQuotes(data);
+      if (res.ok) {
+        const data = await res.json();
+        if (Array.isArray(data)) setQuotes(data);
+      }
+    } catch (e) {
+      console.error('Error loading quotes:', e);
     } finally {
       setLoading(false);
     }
@@ -185,8 +193,12 @@ export default function AdminPage() {
     setLoading(true);
     try {
       const res = await fetch('/api/admin/contacts');
-      const data = await res.json();
-      if (Array.isArray(data)) setContacts(data);
+      if (res.ok) {
+        const data = await res.json();
+        if (Array.isArray(data)) setContacts(data);
+      }
+    } catch (e) {
+      console.error('Error loading contacts:', e);
     } finally {
       setLoading(false);
     }
@@ -253,24 +265,26 @@ export default function AdminPage() {
     : 0;
   const now = new Date();
   // Parse dates in DD/MM format (e.g. "15/05")
-  const parseDM = (s: string): [number, number] => {
+  const parseDM = (s: string | undefined): [number, number] => {
+    if (!s) return [0, 0];
     const parts = s.split(/[/-]/).map(Number);
     // DD/MM by default (matches seed "15/05")
     return [parts[1] || 0, parts[0] || 0]; // [month, day]
   };
   const isHighSeason =
-    config &&
-    (() => {
-      const [im, id] = parseDM(config.temporadaAltaInicio);
-      const [fm, fd] = parseDM(config.temporadaAltaFin);
-      const m = now.getMonth() + 1;
-      const d = now.getDate();
-      const start = im * 100 + id;
-      const end = fm * 100 + fd;
-      const cur = m * 100 + d;
-      if (start <= end) return cur >= start && cur <= end;
-      return cur >= start || cur <= end;
-    })();
+    config && config.temporadaAltaInicio && config.temporadaAltaFin
+      ? (() => {
+          const [im, id] = parseDM(config.temporadaAltaInicio);
+          const [fm, fd] = parseDM(config.temporadaAltaFin);
+          const m = now.getMonth() + 1;
+          const d = now.getDate();
+          const start = im * 100 + id;
+          const end = fm * 100 + fd;
+          const cur = m * 100 + d;
+          if (start <= end) return cur >= start && cur <= end;
+          return cur >= start || cur <= end;
+        })()
+      : false;
 
   // ====== RENDER ======
 

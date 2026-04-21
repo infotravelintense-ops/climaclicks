@@ -1,14 +1,14 @@
 import { NextResponse } from 'next/server';
 import { readFileSync, writeFileSync } from 'fs';
 import { join } from 'path';
-import { isAdminAuthenticated } from '@/app/lib/admin-auth';
+import { isAdminAuthenticatedFromRequest } from '@/app/lib/admin-auth';
 
 export const dynamic = 'force-dynamic';
 
 const catalogPath = join(process.cwd(), 'public', 'data', 'equipment-catalog.json');
 
-export async function GET() {
-  if (!isAdminAuthenticated()) {
+export async function GET(req: Request) {
+  if (!isAdminAuthenticatedFromRequest(req)) {
     return NextResponse.json({ error: 'No autorizado' }, { status: 401 });
   }
   try {
@@ -21,7 +21,7 @@ export async function GET() {
 }
 
 export async function PUT(req: Request) {
-  if (!isAdminAuthenticated()) {
+  if (!isAdminAuthenticatedFromRequest(req)) {
     return NextResponse.json({ error: 'No autorizado' }, { status: 401 });
   }
   try {
