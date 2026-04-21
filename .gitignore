@@ -25,3 +25,5 @@ Thumbs.db
 !.yarn/versions
 .pnp.*
 tsconfig.tsbuildinfo
+
+yarn.lock
