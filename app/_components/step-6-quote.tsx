@@ -3,9 +3,9 @@
 import Image from 'next/image';
 import type { Language, Equipment, ServiceType } from '@/app/types';
 import { formatCurrency, isValidSpanishPostalCode, isValidMaillorquinPostalCode, BASE_INSTALLATION_PRICE } from '@/app/utils/calculations';
-import { useState } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { CountdownTimer } from './countdown-timer';
-import { Check, Download, AlertTriangle, ExternalLink, CreditCard, Smartphone } from 'lucide-react';
+import { Check, Download, AlertTriangle, ExternalLink, CreditCard, Smartphone, X as XIcon } from 'lucide-react';
 
 interface Step6Props {
   language: Language;
@@ -101,6 +101,22 @@ export function Step6Quote({ language, model, serviceType, alternativeModels, pr
   const [cpError, setCpError] = useState(false);
   const [cpOutsideMallorca, setCpOutsideMallorca] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [showRetentionModal, setShowRetentionModal] = useState(false);
+  const [retentionDismissed, setRetentionDismissed] = useState(false);
+  const [discountExpired, setDiscountExpired] = useState(false);
+
+  // Modal de retención: se muestra cuando el descuento está activo y el usuario
+  // intenta irse (mouseleave en la parte superior de la ventana)
+  const handleMouseLeave = useCallback((e: MouseEvent) => {
+    if (e.clientY <= 5 && !retentionDismissed && !discountExpired && !submitted) {
+      setShowRetentionModal(true);
+    }
+  }, [retentionDismissed, discountExpired, submitted]);
+
+  useEffect(() => {
+    document.addEventListener('mouseleave', handleMouseLeave);
+    return () => document.removeEventListener('mouseleave', handleMouseLeave);
+  }, [handleMouseLeave]);
 
   const includedItems = getIncludedItems(serviceType);
 
@@ -279,6 +295,7 @@ export function Step6Quote({ language, model, serviceType, alternativeModels, pr
         totalPrice={precio.subtotal + precio.iva}
         discountPercentage={precio.descuentoPorcentaje}
         discountedPrice={precio.totalFinal}
+        onExpired={() => setDiscountExpired(true)}
       />
 
       {/* Otras opciones compatibles (carrusel horizontal) */}
@@ -428,6 +445,56 @@ export function Step6Quote({ language, model, serviceType, alternativeModels, pr
           Nos pondremos en contacto en las pr&oacute;ximas 24 horas para confirmar tu solicitud.
         </p>
       </form>
+
+      {/* Texto legal en letra pequeña */}
+      <div className="bg-gray-50 rounded-xl p-4 mt-2">
+        <p className="text-[10px] leading-relaxed text-gray-400">
+          * Cualquier cosa que no esté incluida específicamente en este presupuesto el cliente deberá abonarlo el día de la instalación. Si por algún motivo no se pudiera instalar por omisión de información del cliente, se abonará el día de trabajo de los operarios y los equipos no podrán ser devueltos.
+        </p>
+      </div>
+
+      {/* Modal de retención — se muestra al intentar abandonar con descuento activo */}
+      {showRetentionModal && (
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/60 backdrop-blur-sm animate-fadeInUp">
+          <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full mx-4 p-8 relative">
+            <button
+              onClick={() => { setShowRetentionModal(false); setRetentionDismissed(true); }}
+              className="absolute top-3 right-3 text-gray-400 hover:text-gray-600 transition-colors"
+              aria-label="Cerrar"
+            >
+              <XIcon className="w-5 h-5" />
+            </button>
+            <div className="text-center">
+              <div className="mx-auto w-16 h-16 rounded-full bg-amber-100 flex items-center justify-center mb-4">
+                <AlertTriangle className="w-8 h-8 text-amber-600" />
+              </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-2">¡Espera! Tu descuento tiene tiempo limitado</h3>
+              <p className="text-gray-600 mb-6">
+                El descuento del <span className="font-bold text-green-600">{precio.descuentoPorcentaje}%</span> que tienes disponible caducará pronto. Si abandonas ahora, podrías perder esta oferta exclusiva.
+              </p>
+              <div className="space-y-3">
+                <button
+                  onClick={() => {
+                    setShowRetentionModal(false);
+                    setRetentionDismissed(true);
+                    // Scroll to form
+                    document.querySelector('form')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                  }}
+                  className="w-full px-6 py-3 rounded-xl bg-gradient-to-r from-blue-500 to-cyan-500 text-white font-bold hover:shadow-lg transition-all"
+                >
+                  Aceptar presupuesto
+                </button>
+                <button
+                  onClick={() => { setShowRetentionModal(false); setRetentionDismissed(true); }}
+                  className="w-full px-6 py-3 rounded-xl border-2 border-gray-200 text-gray-500 font-semibold hover:bg-gray-50 transition-all"
+                >
+                  Cerrar
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

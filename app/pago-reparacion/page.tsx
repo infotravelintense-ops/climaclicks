@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { ArrowLeft, AlertCircle, Clock } from 'lucide-react';
 import type { Language } from '@/app/types';
@@ -18,9 +18,21 @@ export default function PagoReparacion() {
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
 
-  const total = 90;
-  const descuento = 9; // 10%
-  const totalConDescuento = total - descuento; // 81€
+  // Temporada alta: 15 mayo - 15 septiembre → 120€
+  // Temporada baja: 16 septiembre - 14 mayo → 90€
+  const [isTemporadaAlta, setIsTemporadaAlta] = useState(false);
+  useEffect(() => {
+    const now = new Date();
+    const month = now.getMonth(); // 0-indexed
+    const day = now.getDate();
+    // Mayo (4) desde día 15 hasta Septiembre (8) día 15
+    const alta = (month === 4 && day >= 15) || (month > 4 && month < 8) || (month === 8 && day <= 15);
+    setIsTemporadaAlta(alta);
+  }, []);
+  const total = isTemporadaAlta ? 120 : 90;
+  const descuentoPct = 10;
+  const descuento = total * descuentoPct / 100;
+  const totalConDescuento = total - descuento;
 
   const isValidMallorkaPostalCode = (code: string) => {
     const postal = parseInt(code);
@@ -218,12 +230,12 @@ export default function PagoReparacion() {
               </h3>
               <div className="space-y-3">
                 <div className="flex justify-between text-sm">
-                  <span className="text-gray-600">Servicio de reparación:</span>
-                  <span className="font-semibold text-gray-900">90,00€</span>
+                  <span className="text-gray-600">Servicio de reparación{isTemporadaAlta ? ' (temp. alta)' : ' (temp. baja)'}:</span>
+                  <span className="font-semibold text-gray-900">{total.toFixed(2).replace('.', ',')}€</span>
                 </div>
                 <div className="flex justify-between text-sm border-t border-gray-200 pt-3">
                   <span className="text-gray-600">Subtotal:</span>
-                  <span className="font-semibold text-gray-900">90,00€</span>
+                  <span className="font-semibold text-gray-900">{total.toFixed(2).replace('.', ',')}€</span>
                 </div>
               </div>
             </div>
@@ -233,11 +245,11 @@ export default function PagoReparacion() {
               <div className="flex items-start gap-3">
                 <Clock className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
                 <div className="flex-1">
-                  <p className="font-bold text-green-900">10%{' '}{t('reparacion.descuento', language)}</p>
+                  <p className="font-bold text-green-900">{descuentoPct}%{' '}{t('reparacion.descuento', language)}</p>
                   <p className="text-sm text-green-800 mt-1">
                     {t('reparacion.contratar', language)}
                   </p>
-                  <p className="text-2xl font-bold text-green-600 mt-3">81,00€</p>
+                  <p className="text-2xl font-bold text-green-600 mt-3">{totalConDescuento.toFixed(2).replace('.', ',')}€</p>
                 </div>
               </div>
             </div>

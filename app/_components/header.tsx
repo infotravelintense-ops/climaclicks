@@ -220,6 +220,28 @@ export function Footer({ language }: { language: Language }) {
         </div>
       </div>
 
+      {/* Trustpilot widget placeholder — se activará cuando el cliente proporcione su perfil de Trustpilot */}
+      <div className="border-b border-white/10">
+        <div className="max-w-7xl mx-auto px-6 py-6 text-center">
+          <div className="inline-flex items-center gap-3 px-6 py-3 rounded-xl bg-white/5 border border-white/10">
+            <svg className="w-6 h-6 text-[#00b67a]" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
+            </svg>
+            <div>
+              <p className="text-sm font-bold text-white">Trustpilot</p>
+              <p className="text-xs text-gray-400">Valoraciones verificadas — próximamente</p>
+            </div>
+            <div className="flex gap-0.5">
+              {[1,2,3,4,5].map(i => (
+                <svg key={i} className="w-4 h-4 text-[#00b67a]" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
+                </svg>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+
       {/* Contenido principal: 4 columnas */}
       <div className="max-w-7xl mx-auto px-6 py-14">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
