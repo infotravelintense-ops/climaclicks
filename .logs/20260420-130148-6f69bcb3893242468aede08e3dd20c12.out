@@ -1,8 +1,0 @@
-[master 64a97e4] 0b887e5a-c22d-4aa2-9fb2-f1ca77707bdb
- 5 files changed, 223 insertions(+)
- create mode 100644 .env.example
- create mode 100644 DESCARGAR_ARCHIVOS.txt
- create mode 100644 GUIA_HOSTINGER.md
- create mode 100644 GUIA_HOSTINGER.pdf
- create mode 100644 climaya-app.tar.gz
-###64a97e43fe88f0ade67dfd7c8a946e0c419ccb5c###

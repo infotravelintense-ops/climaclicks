@@ -1,6 +1,0 @@
-[master 6b1a5e8] Actualización III: Reparación, Proyecto e Imágenes Equipos
- 10 files changed, 766 insertions(+), 257 deletions(-)
- create mode 100644 .project_instructions.pdf
- create mode 100644 nextjs_space/app/pago-reparacion/page.tsx
- create mode 100644 nextjs_space/app/proyecto/page.tsx
-###6b1a5e828e5338971edfdef774cfff1f7dd8b1a6###

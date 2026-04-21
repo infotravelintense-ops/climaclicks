@@ -1,2 +1,0 @@
-app/api/equipment/route.ts(3,30): error TS2307: Cannot find module '@/data/equipment-catalog.json' or its corresponding type declarations.
-exit_code=2
