@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="es">
+<head><meta charset="UTF-8"><title>Informe ClimayaMallorca</title>
+<style>
+@media print { body { margin: 0; } .no-print { display: none; } }
+body { font-family: 'Segoe UI', Arial, sans-serif; color: #1a1a2e; margin: 0; padding: 40px; line-height: 1.6; max-width: 900px; margin: 0 auto; }
+.header { background: linear-gradient(135deg, #0f4c75, #1b6ca8); color: white; padding: 40px; margin: -40px -40px 30px; text-align: center; }
+.header h1 { margin: 0; font-size: 28px; letter-spacing: 1px; }
+.header p { margin: 5px 0 0; opacity: 0.85; font-size: 14px; }
+.section { margin: 25px 0; }
+.section h2 { color: #0f4c75; border-bottom: 3px solid #0f4c75; padding-bottom: 8px; font-size: 20px; margin-bottom: 15px; }
+.section h3 { color: #333; font-size: 16px; margin: 15px 0 8px; }
+table { width: 100%; border-collapse: collapse; margin: 10px 0; font-size: 13px; }
+th { background: #0f4c75; color: white; padding: 10px; text-align: left; }
+td { padding: 8px 10px; border-bottom: 1px solid #e0e0e0; }
+tr:nth-child(even) { background: #f8f9fa; }
+.status-done { color: #059669; font-weight: bold; }
+.status-pending { color: #d97706; font-weight: bold; }
+.highlight { background: #ecfdf5; border-left: 4px solid #059669; padding: 12px 15px; margin: 10px 0; border-radius: 0 8px 8px 0; }
+.warning { background: #fffbeb; border-left: 4px solid #d97706; padding: 12px 15px; margin: 10px 0; border-radius: 0 8px 8px 0; }
+.footer { margin-top: 40px; padding-top: 20px; border-top: 2px solid #e0e0e0; text-align: center; color: #666; font-size: 12px; }
+.badge { display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 11px; font-weight: bold; }
+.badge-done { background: #d1fae5; color: #065f46; }
+.badge-pending { background: #fef3c7; color: #92400e; }
+.page-break { page-break-before: always; }
+.print-btn { position: fixed; top: 20px; right: 20px; padding: 12px 24px; background: #0f4c75; color: white; border: none; border-radius: 8px; font-size: 16px; cursor: pointer; z-index: 999; box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
+.print-btn:hover { background: #1b6ca8; }
+</style></head>
+<body>
+
+<button class="print-btn no-print" onclick="window.print()">🖨️ Imprimir / Guardar PDF</button>
+
+<div class="header">
+  <h1>📋 INFORME COMPLETO DEL PROYECTO</h1>
+  <p>ClimayaMallorca — Calculadora de Presupuestos de Aire Acondicionado</p>
+  <p style="margin-top:10px; font-size:12px">Fecha: 21 de abril de 2026 | URL: https://climaya.adsventas.es</p>
+</div>
+
+<div class="section">
+  <h2>1. RESUMEN EJECUTIVO</h2>
+  <p>Aplicación web profesional de <strong>calculadora de presupuestos de aire acondicionado en Mallorca</strong>, desarrollada como una Single Page Application con flujo de 6 pasos. La aplicación permite a los clientes finales obtener presupuestos cerrados de forma inmediata, seleccionando tipo de servicio, equipo, características del espacio y extras.</p>
+  <div class="highlight">
+    <strong>URL de producción:</strong> https://climaya.adsventas.es<br>
+    <strong>Panel de administración:</strong> https://climaya.adsventas.es/admin<br>
+    <strong>Repositorio:</strong> GitHub (sincronizado con despliegue automático)
+  </div>
+</div>
+
+<div class="section">
+  <h2>2. FUNCIONALIDADES IMPLEMENTADAS</h2>
+  
+  <h3>2.1 Calculadora de Presupuestos (6 pasos)</h3>
+  <table>
+    <tr><th>Paso</th><th>Descripción</th><th>Estado</th></tr>
+    <tr><td>Paso 1</td><td>Selección de tipo de servicio (Sustitución, Instalación, Reparación, Proyecto)</td><td><span class="status-done">✓ Completado</span></td></tr>
+    <tr><td>Paso 2</td><td>Selección de tipo de equipo (8 tipos: Split, Multisplit, Conducto, Casete, Suelo/Techo, Twin, Multi-conducto, Multi-casete)</td><td><span class="status-done">✓ Completado</span></td></tr>
+    <tr><td>Paso 3</td><td>Características del espacio (m², altura, ubicación). <strong>Soporte multisplit con múltiples estancias (2x1 hasta 5x1)</strong></td><td><span class="status-done">✓ Completado</span></td></tr>
+    <tr><td>Paso 4</td><td>Selección de modelo con modelos recomendados Giatsu (Sakura, Aroma 3, Aroma Plus) y asesoramiento técnico para &gt;7200 fg</td><td><span class="status-done">✓ Completado</span></td></tr>
+    <tr><td>Paso 5</td><td>Extras de instalación (metros adicionales, andamio, urgencia 72h, albañilería para conductos)</td><td><span class="status-done">✓ Completado</span></td></tr>
+    <tr><td>Paso 6</td><td>Presupuesto final con descuento temporal, alternativas, formulario de contacto y ficha técnica descargable</td><td><span class="status-done">✓ Completado</span></td></tr>
+  </table>
+
+  <h3>2.2 Catálogo de Equipos</h3>
+  <table>
+    <tr><th>Característica</th><th>Detalle</th><th>Estado</th></tr>
+    <tr><td>Modelos en catálogo</td><td>162 modelos de aire acondicionado</td><td><span class="status-done">✓</span></td></tr>
+    <tr><td>Marcas principales</td><td>Giatsu (Sakura, Aroma 3, Aroma Plus), Infinition, HTW</td><td><span class="status-done">✓</span></td></tr>
+    <tr><td>8 tipos de equipo</td><td>Split, Multisplit, Conducto, Casete, Suelo/Techo, Twin, Multi-conducto, Multi-casete</td><td><span class="status-done">✓</span></td></tr>
+    <tr><td>Imágenes profesionales</td><td>8 imágenes de equipos + 4 de servicios</td><td><span class="status-done">✓</span></td></tr>
+    <tr><td>Ficha Técnica</td><td>Campo para subir PDF/imagen por modelo desde el admin</td><td><span class="status-done">✓</span></td></tr>
+  </table>
+
+  <h3>2.3 Sistema de Precios</h3>
+  <table>
+    <tr><th>Concepto</th><th>Precio</th></tr>
+    <tr><td>Instalación base</td><td>Incluida en precio del equipo</td></tr>
+    <tr><td>Urgencia 72h (temp. alta: 15 mayo - 15 sept)</td><td>250€</td></tr>
+    <tr><td>Urgencia 72h (temp. baja: 16 sept - 14 mayo)</td><td>150€</td></tr>
+    <tr><td>Reparación temp. alta</td><td>120€</td></tr>
+    <tr><td>Reparación temp. baja</td><td>90€</td></tr>
+    <tr><td>Andamio</td><td>150€</td></tr>
+    <tr><td>Metros adicionales</td><td>30€/metro</td></tr>
+    <tr><td>Albañilería conductos (1x1/2x1/3x1/4x1)</td><td>600€/1000€/1400€/1800€</td></tr>
+    <tr><td>Descuento temporal (5 min)</td><td>&lt;1200€→10%, 1200-2500€→5%, &gt;2500€→3%</td></tr>
+  </table>
+
+  <h3>2.4 Panel de Administración (/admin)</h3>
+  <table>
+    <tr><th>Sección</th><th>Funcionalidad</th><th>Estado</th></tr>
+    <tr><td>Dashboard</td><td>Estadísticas: total presupuestos, contactos, valor medio, tasa completados</td><td><span class="status-done">✓</span></td></tr>
+    <tr><td>Modelos</td><td>Gestión de 162 modelos: editar precios, marcas, eficiencia, garantía. <strong>Columna Ficha Técnica con subida de PDF/imagen</strong></td><td><span class="status-done">✓</span></td></tr>
+    <tr><td>Configuración</td><td>Temporadas, precios urgencia y reparación editables</td><td><span class="status-done">✓</span></td></tr>
+    <tr><td>Presupuestos</td><td>Listado de presupuestos generados por clientes</td><td><span class="status-done">✓</span></td></tr>
+    <tr><td>Contactos</td><td>Listado de formularios de contacto recibidos</td><td><span class="status-done">✓</span></td></tr>
+  </table>
+</div>
+
+<div class="page-break"></div>
+
+<div class="section">
+  <h2>3. CARACTERÍSTICAS TÉCNICAS</h2>
+  
+  <h3>3.1 Interfaz y Experiencia de Usuario</h3>
+  <table>
+    <tr><th>Característica</th><th>Estado</th></tr>
+    <tr><td>Multi-idioma (ES, EN, DE, IT, HU)</td><td><span class="status-done">✓</span></td></tr>
+    <tr><td>Diseño responsive (móvil, tablet, escritorio)</td><td><span class="status-done">✓</span></td></tr>
+    <tr><td>Modal de retención (exit-intent con descuento activo)</td><td><span class="status-done">✓</span></td></tr>
+    <tr><td>Temporizador de descuento temporal (5 minutos)</td><td><span class="status-done">✓</span></td></tr>
+    <tr><td>Carrusel de modelos alternativos en presupuesto</td><td><span class="status-done">✓</span></td></tr>
+    <tr><td>Botón WhatsApp flotante</td><td><span class="status-done">✓</span></td></tr>
+    <tr><td>Favicon profesional (copo de nieve azul/cyan)</td><td><span class="status-done">✓</span></td></tr>
+    <tr><td>Imagen OpenGraph para redes sociales (1200x630)</td><td><span class="status-done">✓</span></td></tr>
+    <tr><td>Optimización de rendimiento CSS</td><td><span class="status-done">✓</span></td></tr>
+    <tr><td>Texto legal en presupuesto</td><td><span class="status-done">✓</span></td></tr>
+  </table>
+
+  <h3>3.2 Flujos Especiales</h3>
+  <table>
+    <tr><th>Flujo</th><th>Descripción</th><th>Estado</th></tr>
+    <tr><td>Reparación</td><td>Formulario independiente con precio por temporada (/pago-reparacion)</td><td><span class="status-done">✓</span></td></tr>
+    <tr><td>Proyecto</td><td>Formulario de solicitud personalizado (/proyecto)</td><td><span class="status-done">✓</span></td></tr>
+    <tr><td>Multisplit</td><td>Configuración multi-estancia con selector de unidades interiores</td><td><span class="status-done">✓</span></td></tr>
+    <tr><td>Asesoramiento técnico</td><td>Modal para solicitar asesoría cuando frigorías &gt;7200 fg</td><td><span class="status-done">✓</span></td></tr>
+    <tr><td>Ficha técnica</td><td>Descarga del archivo subido por admin o fallback print-to-PDF</td><td><span class="status-done">✓</span></td></tr>
+  </table>
+
+  <h3>3.3 Base de Datos</h3>
+  <table>
+    <tr><th>Tabla</th><th>Uso</th></tr>
+    <tr><td>Quote</td><td>Presupuestos generados por clientes</td></tr>
+    <tr><td>Contact</td><td>Formularios de contacto (reparación, proyecto, asesoramiento)</td></tr>
+    <tr><td>DiscountByIP</td><td>Control de descuentos temporales por IP (anti-abuso)</td></tr>
+    <tr><td>SeasonConfig</td><td>Configuración de temporadas y precios (editable desde admin)</td></tr>
+  </table>
+
+  <h3>3.4 Páginas Legales</h3>
+  <table>
+    <tr><th>Página</th><th>URL</th><th>Estado</th></tr>
+    <tr><td>Aviso Legal</td><td>/legal/aviso-legal</td><td><span class="status-done">✓</span></td></tr>
+    <tr><td>Política de Privacidad</td><td>/legal/privacidad</td><td><span class="status-done">✓</span></td></tr>
+  </table>
+</div>
+
+<div class="section">
+  <h2>4. TAREAS PENDIENTES</h2>
+  
+  <div class="warning">
+    <strong>⚠️ Fichas Técnicas — Acción requerida por el cliente</strong>
+    <p>La funcionalidad de subida de fichas técnicas está implementada y operativa. El cliente debe facilitar los archivos PDF o imágenes de las fichas técnicas de cada modelo, indicando a qué modelo corresponde cada una.</p>
+    <p><strong>Cómo subir una ficha:</strong></p>
+    <ol>
+      <li>Acceder a https://climaya.adsventas.es/admin</li>
+      <li>Ir a la pestaña "Modelos"</li>
+      <li>En la columna "Ficha Técnica", hacer clic en "📎 Subir" del modelo correspondiente</li>
+      <li>Seleccionar el archivo PDF o imagen</li>
+      <li>La ficha quedará vinculada al modelo y aparecerá en el presupuesto del cliente</li>
+    </ol>
+  </div>
+
+  <table>
+    <tr><th>Tarea</th><th>Descripción</th><th>Responsable</th></tr>
+    <tr><td><span class="badge badge-pending">Pendiente</span> Fichas Técnicas</td><td>Subir PDFs/imágenes de fichas técnicas por cada modelo desde el panel de administración</td><td>Cliente</td></tr>
+    <tr><td><span class="badge badge-pending">Pendiente</span> Pasarela de Pago</td><td>Integración con Stripe/PayPal/Apple Pay para pagos online (requiere cuenta del cliente)</td><td>Desarrollo + Cliente</td></tr>
+    <tr><td><span class="badge badge-pending">Pendiente</span> Widget Trustpilot</td><td>Reemplazar placeholder por widget real (requiere cuenta Trustpilot del cliente)</td><td>Cliente</td></tr>
+    <tr><td><span class="badge badge-pending">Pendiente</span> Notificaciones Email</td><td>Emails automáticos al recibir presupuestos/contactos (requiere configuración SMTP)</td><td>Desarrollo + Cliente</td></tr>
+    <tr><td><span class="badge badge-pending">Pendiente</span> Google Analytics</td><td>Seguimiento de conversiones y métricas de uso</td><td>Desarrollo + Cliente</td></tr>
+  </table>
+</div>
+
+<div class="section">
+  <h2>5. DATOS DE ACCESO</h2>
+  <table>
+    <tr><th>Recurso</th><th>URL / Dato</th></tr>
+    <tr><td>Web pública</td><td>https://climaya.adsventas.es</td></tr>
+    <tr><td>Panel admin</td><td>https://climaya.adsventas.es/admin</td></tr>
+    <tr><td>Contraseña admin</td><td>climaya2024</td></tr>
+    <tr><td>Repositorio GitHub</td><td>github.com/infotravelintense-ops/climaya</td></tr>
+  </table>
+</div>
+
+<div class="footer">
+  <p><strong>Manteniments Costa Nord S.L.</strong> · Av. Golf 23, Bajo Izquierda, Can Picafort, 07458</p>
+  <p>657 12 94 74 · contabilidad@grupocostanord.com · www.mantenimentscostanord.com</p>
+  <p style="margin-top:10px; color:#999">Informe generado el 21 de abril de 2026</p>
+</div>
+
+</body></html>
