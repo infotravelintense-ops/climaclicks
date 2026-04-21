@@ -13,10 +13,10 @@ interface Step1Props {
 }
 
 const serviceImages: Record<string, string> = {
-  'sustitución': '/servicios/sustitucion.png',
-  'instalacion': '/servicios/instalacion.png',
-  'reparacion': '/servicios/reparacion.png',
-  'proyecto': '/servicios/proyecto.png',
+  'sustitución': '/servicios/sustitucion.jpeg',
+  'instalacion': '/servicios/instalacion.jfif',
+  'reparacion': '/servicios/reparacion.jfif',
+  'proyecto': '/servicios/proyecto.jfif',
   'teknopoint': '/servicios/teknopoint.png',
 };
 
