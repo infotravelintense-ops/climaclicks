@@ -1,7 +1,6 @@
 generator client {
     provider = "prisma-client-js"
-    binaryTargets = ["native", "linux-musl-arm64-openssl-3.0.x"]
-    output = "/home/ubuntu/climamallorca/nextjs_space/node_modules/.prisma/client"
+    binaryTargets = ["native", "debian-openssl-3.0.x", "linux-musl-openssl-3.0.x"]
 }
 
 datasource db {
@@ -9,91 +8,71 @@ datasource db {
     url      = env("DATABASE_URL")
 }
 
-// Presupuestos del flujo completo (6 pasos)
 model Quote {
-  id                    String    @id @default(cuid())
-  clientIp              String
-  timestamp             DateTime  @default(now())
-  language              String    @default("es")
-  
-  // Paso 1: Servicio
-  tipoServicio          String    // "sustitución" | "instalacion"
-  
-  // Paso 2: Tipo Equipo
-  tipoEquipo            String    // "split", "multisplit", "conducto", etc.
-  
-  // Paso 3: Características del espacio
-  metrosCuadrados       Int
-  altura                Float
-  exposicionSolar       Float     @default(1.0)
-  frigoriasCalculadas   Int
-  
-  // Paso 4: Modelo Seleccionado
-  modeloSeleccionado    String
-  marcaSeleccionada     String
-  precioEquipo          Float
-  
-  // Paso 5: Extras
-  andamio               Boolean   @default(false)
-  andamioPrice          Float     @default(0)
-  urgencia72h           Boolean   @default(false)
-  urgenciaPrice         Float     @default(0)
-  metrosAdicionales     Int       @default(0)
-  metrosAdicionalesPrice Float    @default(0)
-  
-  // Paso 6: Presupuesto Final
-  subtotal              Float
-  iva                   Float
-  descuentoPorcentaje   Float     @default(0)
-  descuentoMonto        Float     @default(0)
-  totalFinal            Float
-  ofertaTemporal        Boolean   @default(true)
-  
-  // Datos del cliente
-  nombreCliente         String?
-  emailCliente          String?
-  telefonoCliente       String?
-  direccionCliente      String?
-  codigoPostalCliente   String?
-  
-  // Estado
-  completado            Boolean   @default(false)
-  
-  @@index([clientIp])
+    id                    Int      @id @default(autoincrement())
+    clientIp              String
+    tipoServicio          String
+    tipoEquipo            String
+    metrosCuadrados       Float
+    alturaTecho           Float
+    exposicionSolar       String
+    frigoriasCalculadas   Int
+    modeloSeleccionado    String
+    marcaSeleccionada     String
+    precioEquipo          Float
+    precioInstalacion     Float
+    andamio               Boolean  @default(false)
+    urgente               Boolean  @default(false)
+    metrosExtra           Int      @default(0)
+    descuento             Float    @default(0)
+    totalSinIva           Float
+    iva                   Float
+    totalFinal            Float
+    completado            Boolean  @default(false)
+    timestamp             DateTime @default(now())
+
+    nombreCliente         String?
+    telefonoCliente       String?
+    cpCliente             String?
+    direccionCliente      String?
+    emailCliente          String?
+    estancia              String?
+    conductoUnidadesInteriores Int?
+    precioConducto        Float?
+
+    @@index([clientIp])
+    @@index([timestamp])
 }
 
-// Descuentos por IP (para oferta temporal de 5 minutos)
 model DiscountByIP {
-  id                    String    @id @default(cuid())
-  clientIp              String    @unique
-  ultimoDescuentoUsado  DateTime?
-  
-  @@index([clientIp])
+    id                    Int      @id @default(autoincrement())
+    clientIp              String   @unique
+    ultimoDescuentoUsado  DateTime @default(now())
+
+    @@index([clientIp])
 }
 
-// Contactos del flujo B (Servicios Rápidos)
 model Contact {
-  id                    String    @id @default(cuid())
-  tipoServicio          String    // "averias" | "proyecto"
-  nombre                String
-  email                 String
-  telefono              String
-  descripcion           String    @db.Text
-  timestamp             DateTime  @default(now())
-  estado                String    @default("nuevo") // "nuevo", "procesado", "respondido"
-  
-  @@index([timestamp])
+    id              Int      @id @default(autoincrement())
+    tipoServicio    String
+    nombre          String
+    email           String
+    telefono        String
+    descripcion     String?
+    estado          String   @default("pendiente")
+    timestamp       DateTime @default(now())
+
+    @@index([timestamp])
 }
 
-// Configuración de temporadas y tarifas
 model SeasonConfig {
-  id                    String    @id @default(cuid())
-  temporadaAltaInicio   String    // "15/05"
-  temporadaAltaFin      String    // "15/09"
-  precioUrgenciaAlta    Float
-  precioUrgenciaBaja    Float
-  precioAveriaAlta      Float
-  precioAveriaBaja      Float
-  
-  @@unique([temporadaAltaInicio, temporadaAltaFin])
+    id                    Int    @id @default(autoincrement())
+    temporadaAltaInicio   String
+    temporadaAltaFin      String
+    precioUrgenciaAlta    Float  @default(250)
+    precioUrgenciaBaja    Float  @default(150)
+    precioAveriaAlta      Float  @default(120)
+    precioAveriaBaja      Float  @default(90)
+
+    @@unique([temporadaAltaInicio, temporadaAltaFin])
 }

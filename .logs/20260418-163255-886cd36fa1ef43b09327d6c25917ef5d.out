@@ -1,0 +1,8 @@
+[master addba31] Banderas SVG reales en selector idioma
+ 7 files changed, 51 insertions(+), 24 deletions(-)
+ create mode 100644 nextjs_space/public/flags/de.svg
+ create mode 100644 nextjs_space/public/flags/es.svg
+ create mode 100644 nextjs_space/public/flags/gb.svg
+ create mode 100644 nextjs_space/public/flags/hu.svg
+ create mode 100644 nextjs_space/public/flags/it.svg
+###addba317ec6c8c3f25360483f64c3623521219c3###

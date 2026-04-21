@@ -1,0 +1,4 @@
+[master 3b7a29d] Auto-advance + working menu sections
+ 4 files changed, 463 insertions(+), 37 deletions(-)
+ create mode 100644 nextjs_space/app/_components/info-sections.tsx
+###3b7a29dea48e80abd355d226083d340fb8ea916d###

@@ -1,0 +1,37 @@
+  ▲ Next.js 14.2.28
+  - Local:        http://localhost:3000
+  - Environments: .env
+  - Experiments (use with caution):
+    · outputFileTracingRoot
+
+ ✓ Starting...
+ ✓ Ready in 1126ms
+ ○ Compiling / ...
+ ✓ Compiled / in 1759ms (1235 modules)
+ GET / 200 in 1909ms
+ ✓ Compiled in 491ms (624 modules)
+ GET / 200 in 26ms
+ GET / 200 in 70ms
+ ✓ Compiled /admin in 386ms (1253 modules)
+ GET /admin 200 in 449ms
+ GET / 200 in 427ms
+ GET / 200 in 19ms
+ GET / 200 in 25ms
+ GET / 200 in 77ms
+ ✓ Compiled /api/admin/login in 179ms (662 modules)
+ GET /api/admin/login 200 in 223ms
+ GET /api/admin/login 200 in 5ms
+ GET / 200 in 74ms
+ GET /admin 200 in 21ms
+ GET /api/admin/login 200 in 6ms
+ GET /api/admin/login 200 in 5ms
+ POST /api/admin/login 200 in 6ms
+ ✓ Compiled /api/admin/config in 93ms (667 modules)
+ ✓ Compiled (671 modules)
+ GET /api/admin/quotes 200 in 359ms
+ GET /api/admin/contacts 200 in 368ms
+ GET /api/admin/config 200 in 371ms
+ ✓ Compiled /api/admin/catalog in 80ms (675 modules)
+ GET /api/admin/catalog 200 in 95ms
+ GET /api/admin/config 200 in 8ms
+[?25h

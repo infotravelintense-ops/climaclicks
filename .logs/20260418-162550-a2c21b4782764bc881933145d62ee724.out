@@ -1,0 +1,5 @@
+[master 6b77410] Calculadora identica al spec Canvas
+ 14 files changed, 1057 insertions(+), 592 deletions(-)
+ create mode 100644 nextjs_space/app/legal/aviso-legal/page.tsx
+ create mode 100644 nextjs_space/app/legal/privacidad/page.tsx
+###6b77410393722045cf0dc6e47e5c8d77a7bdc557###

@@ -1,0 +1,7 @@
+[master 8128c62] Imagenes reales en tarjetas de servicio
+ 6 files changed, 63 insertions(+), 53 deletions(-)
+ create mode 100644 nextjs_space/public/servicios/instalacion.png
+ create mode 100644 nextjs_space/public/servicios/proyecto.png
+ create mode 100644 nextjs_space/public/servicios/reparacion.png
+ create mode 100644 nextjs_space/public/servicios/sustitucion.png
+###8128c620707656a3b6dfe076387ca3d2e3ce9793###

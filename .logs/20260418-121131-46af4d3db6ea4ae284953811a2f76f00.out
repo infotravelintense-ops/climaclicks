@@ -1,0 +1,7 @@
+app/_components/step-4-models.tsx(50,11): error TS1003: Identifier expected.
+app/_components/step-4-models.tsx(51,11): error TS1382: Unexpected token. Did you mean `{'>'}` or `&gt;`?
+app/_components/step-4-models.tsx(123,13): error TS17002: Expected corresponding JSX closing tag for 'div'.
+app/_components/step-4-models.tsx(124,11): error TS1381: Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+app/_components/step-4-models.tsx(126,5): error TS1005: ')' expected.
+app/_components/step-4-models.tsx(127,3): error TS1109: Expression expected.
+exit_code=2
