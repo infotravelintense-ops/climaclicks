@@ -9,7 +9,7 @@ import {
   getUrgenciaPrice,
   isHighSeason,
   calculateMetrosAdicionalesPrice,
-  BASE_INSTALLATION_PRICE,
+  getInstallationPrice,
   ANDAMIO_PRICE,
 } from '@/app/utils/calculations';
 import { Header, Footer, WhatsAppButton } from '@/app/_components/header';
@@ -35,7 +35,7 @@ export default function Home() {
   const [language, setLanguage] = useState<Language>('es');
   // Recomendados Giatsu (Sakura / Aroma 3 / Aroma Plus) mostrados en paso 4
   const [recomendados, setRecomendados] = useState<Equipment[]>([]);
-  // Otras marcas (INFINITION, HTW) mostradas como alternativas en paso 6
+  // Otras marcas (Infiniton, HTW) mostradas como alternativas en paso 6
   const [otrasMarcas, setOtrasMarcas] = useState<Equipment[]>([]);
   const [loading, setLoading] = useState(false);
 
@@ -48,6 +48,8 @@ export default function Home() {
     altura: 2.5,
     exposicionSolar: 1.0,
     frigoriasCalculadas: 2500,
+    totalInteriorFrigorias: 0,
+    unidadesInteriores: 0,
     modeloSeleccionado: null as Equipment | null,
     andamio: false,
     urgencia72h: false,
@@ -70,8 +72,17 @@ export default function Home() {
   const loadEquipment = async () => {
     setLoading(true);
     try {
+      const isMulti = quoteData.tipoEquipo && ['multisplit', 'twin', 'multi-conducto', 'multi-cassette'].includes(quoteData.tipoEquipo);
+      const totalInteriorParam = isMulti && quoteData.totalInteriorFrigorias > 0
+        ? `&totalInteriorFrigorias=${quoteData.totalInteriorFrigorias}`
+        : '';
+      // Para equipos multi, enviar también el número de unidades interiores
+      // (rooms.length desde Paso 3: twin=2 fijo, multisplit=2-5 configurable)
+      const unidadesInterioresParam = isMulti
+        ? `&unidadesInteriores=${quoteData.tipoEquipo === 'twin' ? 2 : (quoteData.unidadesInteriores || 2)}`
+        : '';
       const response = await fetch(
-        `/api/equipment?type=${quoteData.tipoEquipo}&frigorias=${quoteData.frigoriasCalculadas}`
+        `/api/equipment?type=${quoteData.tipoEquipo}&frigorias=${quoteData.frigoriasCalculadas}${totalInteriorParam}${unidadesInterioresParam}`
       );
       const data = await response.json();
       setRecomendados(data.recomendados || []);
@@ -165,6 +176,8 @@ export default function Home() {
       altura: 2.5,
       exposicionSolar: 1.0,
       frigoriasCalculadas: 2500,
+      totalInteriorFrigorias: 0,
+      unidadesInteriores: 0,
       modeloSeleccionado: null,
       andamio: false,
       urgencia72h: false,
@@ -186,7 +199,15 @@ export default function Home() {
       const urgenciaPrice = quoteData.urgencia72h ? getUrgenciaPrice(isHighSeason(new Date())) : 0;
       const andamioPrice = quoteData.andamio ? ANDAMIO_PRICE : 0;
       const metrosPrice = calculateMetrosAdicionalesPrice(quoteData.metrosAdicionales);
-      
+
+      // Precio de instalación dinámico según tarifas del Excel
+      const installationPrice = getInstallationPrice(
+        quoteData.tipoEquipo,
+        quoteData.frigoriasCalculadas || 0,
+        quoteData.tipoServicio,
+        quoteData.unidadesInteriores || 0
+      );
+
       // Precios para conductos: 1x1=600€, 2x1=1000€, 3x1=1400€, 4x1=1800€
       const conductoPrecios: Record<number, number> = {
         0: 0, 1: 600, 2: 1000, 3: 1400, 4: 1800,
@@ -195,7 +216,7 @@ export default function Home() {
 
       const prices = calculatePrice(
         quoteData.modeloSeleccionado?.precio || 0,
-        BASE_INSTALLATION_PRICE,
+        installationPrice,
         quoteData.andamio,
         andamioPrice,
         quoteData.urgencia72h,
@@ -249,16 +270,24 @@ export default function Home() {
   const urgenciaPrice = quoteData.urgencia72h ? getUrgenciaPrice(isHighSeason(new Date())) : 0;
   const andamioPrice = quoteData.andamio ? ANDAMIO_PRICE : 0;
   const metrosPrice = calculateMetrosAdicionalesPrice(quoteData.metrosAdicionales);
-  
+
+  // Precio de instalación dinámico según tarifas del Excel (tipo + frigorías + sustitución/nueva)
+  const installationPrice = getInstallationPrice(
+    quoteData.tipoEquipo,
+    quoteData.frigoriasCalculadas || 0,
+    quoteData.tipoServicio,
+    quoteData.unidadesInteriores || 0
+  );
+
   // Precios para conductos: 1x1=600€, 2x1=1000€, 3x1=1400€, 4x1=1800€
   const conductoPrecios: Record<number, number> = {
     0: 0, 1: 600, 2: 1000, 3: 1400, 4: 1800,
   };
   const conductoPrice = conductoPrecios[quoteData.conduutoUnidadesInteriores] || 0;
-  
+
   const prices = calculatePrice(
     quoteData.modeloSeleccionado?.precio || 0,
-    BASE_INSTALLATION_PRICE,
+    installationPrice,
     quoteData.andamio,
     andamioPrice,
     quoteData.urgencia72h,
@@ -268,41 +297,18 @@ export default function Home() {
     conductoPrice
   );
 
-  // Construye lista de alternativas para Paso 6 ordenadas según Canvas:
-  //   1) INFINITION (la más económica)
-  //   2) HTW (opción alternativa)
-  //   3) Aroma 3  (con más garantía)   — sólo si no está ya seleccionada
-  //   4) Aroma Plus (la mejor opción) — sólo si no está ya seleccionada
-  // Las filas excluyen el modelo que el cliente ha seleccionado en el Paso 4.
-  const infinition = otrasMarcas.filter((m) => (m.marca || '').toLowerCase() === 'infinition');
-  const htw = otrasMarcas.filter((m) => (m.marca || '').toLowerCase() === 'htw');
-  const otrasMarcasRestantes = otrasMarcas.filter((m) => {
-    const mk = (m.marca || '').toLowerCase();
-    return mk !== 'infinition' && mk !== 'htw';
-  });
-
-  // Giatsu: recomendados incluye SAKURA / AR3 / ARPLUS. Filtrar el seleccionado.
-  const giatsuFiltrados = recomendados.filter(
+  // Construye lista de alternativas para Paso 6 ORDENADAS POR PRECIO:
+  // Infiniton (la más económica) primero, luego el resto de menor a mayor precio.
+  // Excluye el modelo que el cliente ha seleccionado en el Paso 4.
+  const allAlternatives = [
+    ...otrasMarcas,
+    ...recomendados,
+  ].filter(
     (m) => !quoteData.modeloSeleccionado || m.modelo !== quoteData.modeloSeleccionado.modelo
   );
-  // Ordenar: AR3 (con más garantía) antes que ARPLUS (mejor opción)
-  const giatsuOrdenados = [...giatsuFiltrados].sort((a, b) => {
-    const rank = (modelo: string) => {
-      const m = modelo.toUpperCase();
-      if (m.includes('SAKU')) return 1;
-      if (m.includes('AR3')) return 2;
-      if (m.includes('ARPLUS')) return 3;
-      return 9;
-    };
-    return rank(a.modelo) - rank(b.modelo);
-  });
-
-  const alternativeModels: Equipment[] = [
-    ...infinition,
-    ...htw,
-    ...otrasMarcasRestantes,
-    ...giatsuOrdenados,
-  ];
+  
+  // Ordenar por precio de menor a mayor
+  const alternativeModels: Equipment[] = allAlternatives.sort((a, b) => a.precio - b.precio);
 
   return (
     <>
@@ -356,7 +362,12 @@ export default function Home() {
                 language={language}
                 equipmentType={quoteData.tipoEquipo}
                 onUpdate={(data) => {
-                  setQuoteData({ ...quoteData, ...data });
+                  setQuoteData({ 
+                    ...quoteData, 
+                    ...data,
+                    totalInteriorFrigorias: data.totalInteriorFrigorias || 0,
+                    unidadesInteriores: data.unidadesInteriores || 0,
+                  });
                 }}
               />
             )}
@@ -395,7 +406,7 @@ export default function Home() {
                 alternativeModels={alternativeModels}
                 precio={{
                   precioEquipo: quoteData.modeloSeleccionado.precio,
-                  precioInstalacion: BASE_INSTALLATION_PRICE,
+                  precioInstalacion: installationPrice,
                   precioAndamio: andamioPrice,
                   precioUrgencia: urgenciaPrice,
                   precioMetrosAdicionales: metrosPrice,

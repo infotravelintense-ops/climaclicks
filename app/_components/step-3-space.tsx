@@ -22,11 +22,13 @@ interface Step3Props {
     altura: number;
     exposicionSolar: number;
     frigoriasCalculadas: number;
+    totalInteriorFrigorias?: number;
+    unidadesInteriores?: number;
   }) => void;
 }
 
 const isMultiType = (type?: EquipmentType | null) =>
-  type === 'multisplit' || type === 'twin' || type === 'multi-conducto' || type === 'multi-casete';
+  type === 'multisplit' || type === 'twin' || type === 'multi-conducto' || type === 'multi-cassette';
 
 const defaultRoom = (): RoomData => ({
   estancia: 'Salon',
@@ -74,6 +76,8 @@ export function Step3Space({ language, equipmentType, onUpdate }: Step3Props) {
       altura: updatedRooms[0]?.altura || 2.5,
       exposicionSolar: updatedRooms[0]?.exposicionSolar || 1.0,
       frigoriasCalculadas: totalFrig,
+      totalInteriorFrigorias: totalFrig,
+      unidadesInteriores: updatedRooms.length,
     });
   };
 
@@ -111,7 +115,7 @@ export function Step3Space({ language, equipmentType, onUpdate }: Step3Props) {
 
   const multiLabel = isTwin ? 'Twin (2 unidades)' :
     equipmentType === 'multi-conducto' ? 'Multiconducto' :
-    equipmentType === 'multi-casete' ? 'Multicasete' :
+    equipmentType === 'multi-cassette' ? 'Multicassette' :
     'Multisplit';
 
   // ─── RENDER MULTI ROOM ────────────────────────────────

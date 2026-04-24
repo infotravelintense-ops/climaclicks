@@ -12,25 +12,25 @@ interface Step2Props {
 
 const equipmentImages: Record<string, string> = {
   'split': '/servicios/split-pared.jfif',
-  'multisplit': '/servicios/multisplit.jfif',
   'conducto': '/servicios/conducto.jfif',
-  'casete': '/servicios/casete.jfif',
+  'cassette': '/servicios/casete.jfif',
+  'multisplit': '/servicios/multisplit.jfif',
   'suelo-techo': '/servicios/suelo-techo.jpeg',
-  'twin': '/servicios/twin-suelo-techo.jfif',
   'multi-conducto': '/servicios/multiconducto.jfif',
-  'multi-casete': '/servicios/multicasete.jfif',
+  'multi-cassette': '/servicios/multicasete.jfif',
+  'twin': '/servicios/twin-suelo-techo.jfif',
 };
 
 export function Step2Equipment({ language, onSelectEquipment, selectedEquipment }: Step2Props) {
   const equipmentTypes = [
     { id: 'split', titleKey: 'tipo.split', badgeKey: 'tipo.split.badge' },
-    { id: 'multisplit', titleKey: 'tipo.multisplit', badgeKey: 'tipo.multisplit.badge' },
     { id: 'conducto', titleKey: 'tipo.conducto', badgeKey: 'tipo.conducto.badge' },
-    { id: 'casete', titleKey: 'tipo.casete', badgeKey: 'tipo.casete.badge' },
+    { id: 'cassette', titleKey: 'tipo.cassette', badgeKey: 'tipo.cassette.badge' },
+    { id: 'multisplit', titleKey: 'tipo.multisplit', badgeKey: 'tipo.multisplit.badge' },
     { id: 'suelo-techo', titleKey: 'tipo.suelo-techo', badgeKey: 'tipo.suelo-techo.badge' },
-    { id: 'twin', titleKey: 'tipo.twin', badgeKey: 'tipo.twin.badge' },
     { id: 'multi-conducto', titleKey: 'tipo.multi-conducto', badgeKey: 'tipo.multi-conducto.badge' },
-    { id: 'multi-casete', titleKey: 'tipo.multi-casete', badgeKey: 'tipo.multi-casete.badge' },
+    { id: 'multi-cassette', titleKey: 'tipo.multi-cassette', badgeKey: 'tipo.multi-cassette.badge' },
+    { id: 'twin', titleKey: 'tipo.twin', badgeKey: 'tipo.twin.badge' },
   ];
 
   return (

@@ -2,8 +2,8 @@ import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
 
 export const metadata = {
-  title: 'Política de Privacidad · ClimayaMallorca',
-  description: 'Política de privacidad y tratamiento de datos personales de ClimayaMallorca — Manteniments Costa Nord S.L.',
+  title: 'Política de Privacidad · ClimaClicks',
+  description: 'Política de privacidad y tratamiento de datos personales de ClimaClicks — Manteniments Costa Nord S.L.',
 };
 
 export default function PrivacidadPage() {

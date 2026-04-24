@@ -229,11 +229,28 @@ export default function PagoReparacion() {
                 Resumen del presupuesto
               </h3>
               <div className="space-y-3">
-                <div className="flex justify-between text-sm">
+                <div className="space-y-1.5 mb-4">
+                  <p className="text-sm font-semibold text-gray-700">Este servicio incluye:</p>
+                  <ul className="space-y-1 pl-1">
+                    <li className="text-sm text-gray-600 flex items-center gap-2">
+                      <span className="text-green-500">✓</span> Desplazamiento a toda la isla
+                    </li>
+                    <li className="text-sm text-gray-600 flex items-center gap-2">
+                      <span className="text-green-500">✓</span> Diagnóstico
+                    </li>
+                    <li className="text-sm text-gray-600 flex items-center gap-2">
+                      <span className="text-green-500">✓</span> Localización de la avería
+                    </li>
+                    <li className="text-sm text-gray-600 flex items-center gap-2">
+                      <span className="text-green-500">✓</span> Presupuesto posterior
+                    </li>
+                  </ul>
+                </div>
+                <div className="flex justify-between text-sm border-t border-gray-200 pt-3">
                   <span className="text-gray-600">Servicio de reparación{isTemporadaAlta ? ' (temp. alta)' : ' (temp. baja)'}:</span>
                   <span className="font-semibold text-gray-900">{total.toFixed(2).replace('.', ',')}€</span>
                 </div>
-                <div className="flex justify-between text-sm border-t border-gray-200 pt-3">
+                <div className="flex justify-between text-sm">
                   <span className="text-gray-600">Subtotal:</span>
                   <span className="font-semibold text-gray-900">{total.toFixed(2).replace('.', ',')}€</span>
                 </div>

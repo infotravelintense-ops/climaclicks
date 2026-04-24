@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import type { Language, Equipment, ServiceType } from '@/app/types';
-import { formatCurrency, isValidSpanishPostalCode, isValidMaillorquinPostalCode, BASE_INSTALLATION_PRICE } from '@/app/utils/calculations';
+import { formatCurrency, isValidSpanishPostalCode, isValidMaillorquinPostalCode } from '@/app/utils/calculations';
 import { useState, useEffect, useCallback } from 'react';
 import { CountdownTimer } from './countdown-timer';
 import { Check, Download, AlertTriangle, ExternalLink, CreditCard, Smartphone, X as XIcon } from 'lucide-react';
@@ -63,7 +63,7 @@ function getAlternativeBadge(model: Equipment): { label: string; color: string }
   const marca = (model.marca || '').toLowerCase();
   const giatsu = getGiatsuBadge(model.modelo);
   if (giatsu) return giatsu;
-  if (marca === 'infinition') return { label: 'La opción más económica', color: 'bg-emerald-100 text-emerald-800 border-emerald-300' };
+  if (marca === 'infiniton') return { label: 'La opción más económica', color: 'bg-emerald-100 text-emerald-800 border-emerald-300' };
   if (marca === 'htw') return { label: 'Opción alternativa', color: 'bg-blue-100 text-blue-800 border-blue-300' };
   return { label: 'Opción alternativa', color: 'bg-gray-100 text-gray-800 border-gray-300' };
 }
@@ -79,14 +79,14 @@ function getDisplayBrand(model: Equipment): string {
   if (m.includes('ARPLUS')) return 'Aroma Plus';
   if (m.includes('AR3')) return 'Aroma 3';
   const marca = (model.marca || '').trim();
-  if (marca.toLowerCase() === 'infinition') return 'Infinition';
+  if (marca.toLowerCase() === 'infiniton') return 'Infiniton';
   if (marca.toLowerCase() === 'htw') return 'HTW';
   return marca;
 }
 
 // Calcula el precio pre-descuento (con IVA) para mostrar en el carrusel
-function calcPreviewTotal(equipo: number): number {
-  const subtotal = equipo + BASE_INSTALLATION_PRICE;
+function calcPreviewTotal(equipo: number, instalacion: number): number {
+  const subtotal = equipo + instalacion;
   return subtotal * 1.21;
 }
 
@@ -327,7 +327,7 @@ export function Step6Quote({ language, model, serviceType, alternativeModels, pr
             <div className="flex gap-4 min-w-min">
               {alternativeModels.map((alt) => {
                 const badge = getAlternativeBadge(alt);
-                const preDisc = calcPreviewTotal(alt.precio);
+                const preDisc = calcPreviewTotal(alt.precio, precio.precioInstalacion);
                 return (
                   <button
                     key={alt.modelo}

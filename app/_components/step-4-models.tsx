@@ -21,22 +21,68 @@ function getGiatsuLineInfo(modelo: string): { displayName: string; orderIndex: n
   return null;
 }
 
-// Orden exacto según el spec: Sakura, Aroma 3, Aroma Plus
-const BADGE_LABELS = [
-  'Relación calidad precio',
-  'Con más garantía',
-  'La mejor opción',
-];
-const BADGE_STYLES = [
-  'bg-emerald-100 text-emerald-800 border border-emerald-300',
-  'bg-orange-100 text-orange-800 border border-orange-300',
-  'bg-purple-100 text-purple-800 border border-purple-300',
-];
-const CARD_TINT = [
-  'from-emerald-50/40 to-white',
-  'from-orange-50/40 to-white',
-  'from-purple-50/40 to-white',
-];
+function getBadgeForModel(model: Equipment, index: number): { label: string; style: string; tint: string } {
+  const marca = (model.marca || '').toLowerCase();
+  const m = (model.modelo || '').toUpperCase();
+  
+  // Giatsu lines
+  if (m.includes('SAKU')) {
+    return { 
+      label: 'Relación calidad precio', 
+      style: 'bg-emerald-100 text-emerald-800 border border-emerald-300',
+      tint: 'from-emerald-50/40 to-white'
+    };
+  }
+  if (m.includes('AR3')) {
+    return { 
+      label: 'Con más garantía', 
+      style: 'bg-orange-100 text-orange-800 border border-orange-300',
+      tint: 'from-orange-50/40 to-white'
+    };
+  }
+  if (m.includes('ARPLUS')) {
+    return { 
+      label: 'La mejor opción', 
+      style: 'bg-purple-100 text-purple-800 border border-purple-300',
+      tint: 'from-purple-50/40 to-white'
+    };
+  }
+  // HTW
+  if (marca === 'htw') {
+    return { 
+      label: 'Opción alternativa', 
+      style: 'bg-blue-100 text-blue-800 border border-blue-300',
+      tint: 'from-blue-50/40 to-white'
+    };
+  }
+  // Infiniton
+  if (marca === 'infiniton') {
+    return { 
+      label: 'La opción más económica', 
+      style: 'bg-emerald-100 text-emerald-800 border border-emerald-300',
+      tint: 'from-emerald-50/40 to-white'
+    };
+  }
+  
+  // Default fallback
+  const defaults = [
+    { label: 'Relación calidad precio', style: 'bg-emerald-100 text-emerald-800 border border-emerald-300', tint: 'from-emerald-50/40 to-white' },
+    { label: 'Con más garantía', style: 'bg-orange-100 text-orange-800 border border-orange-300', tint: 'from-orange-50/40 to-white' },
+    { label: 'La mejor opción', style: 'bg-purple-100 text-purple-800 border border-purple-300', tint: 'from-purple-50/40 to-white' },
+  ];
+  return defaults[index % defaults.length];
+}
+
+function getDisplayName(model: Equipment): string {
+  const m = (model.modelo || '').toUpperCase();
+  if (m.includes('SAKU')) return 'Sakura';
+  if (m.includes('ARPLUS')) return 'Aroma Plus';
+  if (m.includes('AR3')) return 'Aroma 3';
+  const marca = (model.marca || '').trim();
+  if (marca.toLowerCase() === 'htw') return 'HTW';
+  if (marca.toLowerCase() === 'infiniton') return 'Infiniton';
+  return marca;
+}
 
 export function Step4Models({ models, language, onSelectModel, selectedModel, frigoriasCalculadas = 0 }: Step4Props) {
   const [showAsesoramiento, setShowAsesoramiento] = useState(false);
@@ -52,13 +98,8 @@ export function Step4Models({ models, language, onSelectModel, selectedModel, fr
   const MAX_WITH_PLUS = MAX_FRIGORIAS * 1.2; // 7200
   const exceedsFrigorias = frigoriasCalculadas > MAX_WITH_PLUS;
 
-  // Ordenar siempre: Sakura -> Aroma 3 -> Aroma Plus (de más barato a más caro, igual al spec)
-  const sorted = [...models]
-    .map((m) => ({ model: m, info: getGiatsuLineInfo(m.modelo) }))
-    .filter((x) => x.info !== null)
-    .sort((a, b) => (a.info!.orderIndex - b.info!.orderIndex))
-    .map((x) => x.model);
-
+  // Ordenar por precio de menor a mayor
+  const sorted = [...models].sort((a, b) => a.precio - b.precio);
   const displayModels = sorted.slice(0, 3);
 
   const handleAsesoramientoSubmit = async (e: React.FormEvent) => {
@@ -107,18 +148,18 @@ export function Step4Models({ models, language, onSelectModel, selectedModel, fr
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {displayModels.map((model, index) => {
-          const info = getGiatsuLineInfo(model.modelo);
-          const displayName = info ? info.displayName : model.marca;
+          const displayName = getDisplayName(model);
+          const badge = getBadgeForModel(model, index);
           const isSelected = selectedModel?.modelo === model.modelo;
           return (
             <button
               key={model.modelo}
               onClick={() => onSelectModel(model)}
-              className={`group relative overflow-hidden rounded-2xl bg-gradient-to-br ${CARD_TINT[index] || CARD_TINT[0]} transition-all duration-300 text-left h-full shadow-card card-hover ${isSelected ? 'ring-2 ring-emerald-500 ring-offset-2 shadow-elevated' : ''}`}
+              className={`group relative overflow-hidden rounded-2xl bg-gradient-to-br ${badge.tint} transition-all duration-300 text-left h-full shadow-card card-hover ${isSelected ? 'ring-2 ring-emerald-500 ring-offset-2 shadow-elevated' : ''}`}
             >
               {/* Badge */}
-              <div className={`absolute top-4 left-1/2 -translate-x-1/2 z-10 px-4 py-1.5 rounded-full text-xs font-bold ${BADGE_STYLES[index] || BADGE_STYLES[0]}`}>
-                {BADGE_LABELS[index] || BADGE_LABELS[0]}
+              <div className={`absolute top-4 left-1/2 -translate-x-1/2 z-10 px-4 py-1.5 rounded-full text-xs font-bold ${badge.style}`}>
+                {badge.label}
               </div>
 
               <div className="pt-14 pb-6 px-6 flex flex-col h-full">
@@ -142,7 +183,7 @@ export function Step4Models({ models, language, onSelectModel, selectedModel, fr
                 </div>
 
                 {/* Garantía + Eficiencia */}
-                <div className="text-center text-sm text-gray-700 space-y-1 mb-4">
+                <div className="text-center text-sm text-gray-700 space-y-1 mb-3">
                   <p>
                     <span className="font-semibold">Garantía:</span> {model.garantia}
                   </p>
@@ -150,6 +191,13 @@ export function Step4Models({ models, language, onSelectModel, selectedModel, fr
                     <span className="font-semibold">Eficiencia:</span> {model.eficiencia}
                   </p>
                 </div>
+
+                {/* Descripción comercial */}
+                {model.descripcion && (
+                  <p className="text-xs text-gray-600 leading-relaxed mb-4 text-center line-clamp-4">
+                    {model.descripcion}
+                  </p>
+                )}
 
                 {/* Especificaciones adicionales */}
                 <div className="grid grid-cols-2 gap-2 mt-auto">

@@ -2,17 +2,17 @@
 
 export type Language = 'es' | 'en' | 'de' | 'it' | 'hu';
 
-export type ServiceType = 'sustitución' | 'instalacion' | 'reparacion' | 'proyecto';
+export type ServiceType = 'sustitución' | 'instalacion' | 'reparacion' | 'proyecto' | 'casco-antiguo';
 
 export type EquipmentType = 
   | 'split'
-  | 'multisplit'
   | 'conducto'
-  | 'casete'
+  | 'cassette'
+  | 'multisplit'
   | 'suelo-techo'
-  | 'twin'
   | 'multi-conducto'
-  | 'multi-casete';
+  | 'multi-cassette'
+  | 'twin';
 
 export interface Equipment {
   tipo: EquipmentType;
@@ -28,6 +28,7 @@ export interface Equipment {
   imagen?: string;
   imagenMarca?: string;
   fichaTecnica?: string;
+  unidadesInteriores?: number;
 }
 
 export interface QuoteData {

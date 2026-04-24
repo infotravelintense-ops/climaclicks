@@ -452,7 +452,7 @@ export function WhatsAppButton() {
                 <WhatsAppIcon className="w-5 h-5 text-white" />
               </div>
               <div>
-                <p className="font-bold text-gray-900 text-sm">ClimayaMallorca</p>
+                <p className="font-bold text-gray-900 text-sm">ClimaClicks</p>
                 <p className="text-xs text-green-600">● En línea ahora</p>
               </div>
             </div>

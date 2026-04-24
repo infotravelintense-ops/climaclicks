@@ -95,7 +95,7 @@ export function Logo({ className = '', showText = true, variant = 'color', size 
         fill={textColor}
         letterSpacing="-0.5"
       >
-        ClimayaMallorca
+        ClimaClicks
       </text>
     </svg>
   );

@@ -17,6 +17,7 @@ const serviceImages: Record<string, string> = {
   'instalacion': '/servicios/instalacion.jfif',
   'reparacion': '/servicios/reparacion.jfif',
   'proyecto': '/servicios/proyecto.jfif',
+  'casco-antiguo': '/servicios/casco-antiguo.jpg',
   'teknopoint': '/servicios/teknopoint.png',
 };
 
@@ -25,6 +26,7 @@ const serviceAlt: Record<string, string> = {
   'instalacion': 'Dos técnicos instalando un aire acondicionado split en el salón',
   'reparacion': 'Técnico reparando un aire acondicionado averiado',
   'proyecto': 'Ingeniero revisando planos de un proyecto de climatización',
+  'casco-antiguo': 'Fachada de casco antiguo de Palma de Mallorca sin unidades exteriores de aire acondicionado',
   'teknopoint': 'Sistema Tekno Point para edificios históricos y cascos antiguos',
 };
 
@@ -43,6 +45,8 @@ export function Step1Service({ language, onSelectService, selectedService }: Ste
     { id: 'reparacion', titleKey: 'paso1.reparacion', descKey: 'paso1.reparacion.desc' },
     { id: 'proyecto', titleKey: 'paso1.proyecto', descKey: 'paso1.proyecto.desc' },
   ];
+
+  const cascoAntiguoService = { id: 'casco-antiguo' as ServiceType, titleKey: 'paso1.cascoAntiguo', descKey: 'paso1.cascoAntiguo.desc' };
 
   const handleTeknoPointSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -134,37 +138,73 @@ export function Step1Service({ language, onSelectService, selectedService }: Ste
         })}
       </div>
 
-      {/* Botón Sistema Tekno Point */}
-      <div className="flex justify-center">
+      {/* Fila especial: Soluciones casco antiguo + Sistema Tekno Point (lado a lado) */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8 mb-8">
+        {/* Card Casco Antiguo */}
         <button
-          onClick={() => setShowTeknoPoint(true)}
-          className="group relative overflow-hidden rounded-2xl transition-all duration-300 border-2 border-gray-200 bg-white text-left card-hover shadow-card hover:border-purple-300 w-full md:w-1/2 lg:w-1/3"
+          onClick={() => onSelectService(cascoAntiguoService.id)}
+          className={`group relative overflow-hidden rounded-2xl transition-all duration-300 border-2 bg-white text-left ${
+            selectedService === cascoAntiguoService.id
+              ? 'border-blue-500 shadow-elevated ring-2 ring-blue-400 ring-offset-2'
+              : 'border-gray-200 card-hover shadow-card hover:border-blue-300'
+          }`}
           style={{
             animation: `fadeInUp 0.6s ease-out 0.4s both`,
           }}
         >
-          {/* Imagen principal */}
+          <div className="relative w-full aspect-[4/3] bg-gray-100 overflow-hidden">
+            <Image
+              src={serviceImages['casco-antiguo']}
+              alt={serviceAlt['casco-antiguo']}
+              fill
+              sizes="(max-width: 768px) 100vw, 50vw"
+              className="object-cover group-hover:scale-105 transition-transform duration-500"
+              priority={false}
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent" />
+            {selectedService === cascoAntiguoService.id && (
+              <div className="absolute top-4 right-4 inline-flex items-center gap-1.5 px-3 py-1.5 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-full font-bold text-xs shadow-lg">
+                <Check className="w-3.5 h-3.5" strokeWidth={3} />
+                Seleccionado
+              </div>
+            )}
+          </div>
+          <div className="p-6 md:p-7">
+            <h3 className={`text-xl md:text-2xl font-bold mb-2 transition-colors ${
+              selectedService === cascoAntiguoService.id ? 'text-blue-700' : 'text-gray-900 group-hover:text-blue-600'
+            }`}>
+              {t(cascoAntiguoService.titleKey, language)}
+            </h3>
+            <p className="text-gray-600 text-sm md:text-base leading-relaxed">
+              {t(cascoAntiguoService.descKey, language)}
+            </p>
+          </div>
+        </button>
+
+        {/* Card Sistema Tekno Point (abre modal) */}
+        <button
+          onClick={() => setShowTeknoPoint(true)}
+          className="group relative overflow-hidden rounded-2xl transition-all duration-300 border-2 border-gray-200 bg-white text-left card-hover shadow-card hover:border-purple-300"
+          style={{
+            animation: `fadeInUp 0.6s ease-out 0.5s both`,
+          }}
+        >
           <div className="relative w-full aspect-[4/3] bg-gray-100 overflow-hidden">
             <Image
               src={serviceImages['teknopoint']}
               alt={serviceAlt['teknopoint']}
               fill
-              sizes="(max-width: 768px) 100vw, 33vw"
+              sizes="(max-width: 768px) 100vw, 50vw"
               className="object-cover group-hover:scale-105 transition-transform duration-500"
               priority={false}
             />
-            {/* Overlay sutil */}
             <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent" />
-            
-            {/* Play Icon */}
             <div className="absolute inset-0 flex items-center justify-center">
               <div className="w-16 h-16 rounded-full bg-white/80 flex items-center justify-center group-hover:bg-white transition-all group-hover:scale-110 duration-300 shadow-lg">
                 <Play className="w-8 h-8 text-purple-600 fill-purple-600" />
               </div>
             </div>
           </div>
-
-          {/* Contenido textual */}
           <div className="p-6 md:p-7">
             <h3 className="text-xl md:text-2xl font-bold mb-2 text-gray-900 group-hover:text-purple-600 transition-colors">
               Sistema Tekno Point
@@ -193,18 +233,16 @@ export function Step1Service({ language, onSelectService, selectedService }: Ste
             </div>
 
             <div className="p-6 space-y-6">
-              {/* Video explicativo */}
+              {/* Imagen ilustrativa del sistema */}
               <div>
                 <h3 className="text-lg font-bold text-gray-900 mb-3">Conoce nuestro sistema</h3>
-                <div className="relative w-full aspect-video bg-gray-900 rounded-xl overflow-hidden">
-                  <iframe
-                    width="100%"
-                    height="100%"
-                    src="https://www.youtube.com/embed/dQw4w9WgXcQ"
-                    title="Sistema Tekno Point"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowFullScreen
-                    className="w-full h-full"
+                <div className="relative w-full aspect-video bg-gray-100 rounded-xl overflow-hidden">
+                  <Image
+                    src={serviceImages['teknopoint']}
+                    alt={serviceAlt['teknopoint']}
+                    fill
+                    sizes="(max-width: 768px) 100vw, 640px"
+                    className="object-cover"
                   />
                 </div>
               </div>
