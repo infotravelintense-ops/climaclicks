@@ -4,6 +4,7 @@ import Image from 'next/image';
 import { useState } from 'react';
 import type { Language, ServiceType } from '@/app/types';
 import { t } from '@/app/utils/translations';
+import { submitContact } from '@/app/lib/form-submit';
 import { Check, X, Play } from 'lucide-react';
 
 interface Step1Props {
@@ -51,16 +52,12 @@ export function Step1Service({ language, onSelectService, selectedService }: Ste
   const handleTeknoPointSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const response = await fetch('/api/contact', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          tipoServicio: 'teknopoint',
-          nombre: formData.nombre,
-          email: formData.email,
-          telefono: formData.telefono,
-          descripcion: `Solicitud de Sistema Tekno Point. ${formData.descripcion}`,
-        }),
+      const response = await submitContact({
+        tipoServicio: 'teknopoint',
+        nombre: formData.nombre,
+        email: formData.email,
+        telefono: formData.telefono,
+        descripcion: `Solicitud de Sistema Tekno Point. ${formData.descripcion}`,
       });
       if (response.ok) {
         alert('Solicitud enviada. Nuestro equipo se pondrá en contacto contigo pronto.');

@@ -13,6 +13,8 @@ import {
   ANDAMIO_PRICE,
 } from '@/app/utils/calculations';
 import { Header, Footer, WhatsAppButton } from '@/app/_components/header';
+import { fetchEquipment } from '@/app/lib/equipment-client';
+import { submitQuote } from '@/app/lib/form-submit';
 import { Step1Service } from '@/app/_components/step-1-service';
 import { Step2Equipment } from '@/app/_components/step-2-equipment';
 import { Step3Space } from '@/app/_components/step-3-space';
@@ -70,21 +72,26 @@ export default function Home() {
   }, [quoteData.tipoEquipo, quoteData.frigoriasCalculadas, currentStep]);
 
   const loadEquipment = async () => {
+    if (!quoteData.tipoEquipo) return;
     setLoading(true);
     try {
-      const isMulti = quoteData.tipoEquipo && ['multisplit', 'twin', 'multi-conducto', 'multi-cassette'].includes(quoteData.tipoEquipo);
-      const totalInteriorParam = isMulti && quoteData.totalInteriorFrigorias > 0
-        ? `&totalInteriorFrigorias=${quoteData.totalInteriorFrigorias}`
-        : '';
-      // Para equipos multi, enviar también el número de unidades interiores
-      // (rooms.length desde Paso 3: twin=2 fijo, multisplit=2-5 configurable)
-      const unidadesInterioresParam = isMulti
-        ? `&unidadesInteriores=${quoteData.tipoEquipo === 'twin' ? 2 : (quoteData.unidadesInteriores || 2)}`
-        : '';
-      const response = await fetch(
-        `/api/equipment?type=${quoteData.tipoEquipo}&frigorias=${quoteData.frigoriasCalculadas}${totalInteriorParam}${unidadesInterioresParam}`
+      const isMulti = ['multisplit', 'twin', 'multi-conducto', 'multi-cassette'].includes(
+        quoteData.tipoEquipo
       );
-      const data = await response.json();
+      const unidadesInteriores = isMulti
+        ? quoteData.tipoEquipo === 'twin'
+          ? 2
+          : quoteData.unidadesInteriores || 2
+        : 0;
+      const data = await fetchEquipment({
+        type: quoteData.tipoEquipo,
+        frigorias: quoteData.frigoriasCalculadas,
+        totalInteriorFrigorias:
+          isMulti && quoteData.totalInteriorFrigorias > 0
+            ? quoteData.totalInteriorFrigorias
+            : undefined,
+        unidadesInteriores: isMulti ? unidadesInteriores : undefined,
+      });
       setRecomendados(data.recomendados || []);
       setOtrasMarcas(data.otrasMarcas || []);
     } catch (error) {
@@ -226,35 +233,31 @@ export default function Home() {
         conductoPrice
       );
 
-      const response = await fetch('/api/quote/create', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          language: quoteData.language,
-          tipoServicio: quoteData.tipoServicio,
-          tipoEquipo: quoteData.tipoEquipo,
-          metrosCuadrados: quoteData.metrosCuadrados,
-          altura: quoteData.altura,
-          exposicionSolar: quoteData.exposicionSolar,
-          frigoriasCalculadas: quoteData.frigoriasCalculadas,
-          modeloSeleccionado: quoteData.modeloSeleccionado?.modelo,
-          marcaSeleccionada: quoteData.modeloSeleccionado?.marca,
-          precioEquipo: quoteData.modeloSeleccionado?.precio,
-          andamio: quoteData.andamio,
-          andamioPrice,
-          urgencia72h: quoteData.urgencia72h,
-          urgenciaPrice,
-          metrosAdicionales: quoteData.metrosAdicionales,
-          metrosAdicionalesPrice: metrosPrice,
-          conductoUnidadesInteriores: quoteData.conduutoUnidadesInteriores,
-          conductoPrice,
-          ...prices,
-          nombreCliente: formData.nombre,
-          emailCliente: formData.email,
-          telefonoCliente: formData.telefono,
-          direccionCliente: formData.direccion,
-          codigoPostalCliente: formData.codigoPostal,
-        }),
+      const response = await submitQuote({
+        language: quoteData.language,
+        tipoServicio: quoteData.tipoServicio,
+        tipoEquipo: quoteData.tipoEquipo,
+        metrosCuadrados: quoteData.metrosCuadrados,
+        altura: quoteData.altura,
+        exposicionSolar: quoteData.exposicionSolar,
+        frigoriasCalculadas: quoteData.frigoriasCalculadas,
+        modeloSeleccionado: quoteData.modeloSeleccionado?.modelo,
+        marcaSeleccionada: quoteData.modeloSeleccionado?.marca,
+        precioEquipo: quoteData.modeloSeleccionado?.precio,
+        andamio: quoteData.andamio,
+        andamioPrice,
+        urgencia72h: quoteData.urgencia72h,
+        urgenciaPrice,
+        metrosAdicionales: quoteData.metrosAdicionales,
+        metrosAdicionalesPrice: metrosPrice,
+        conductoUnidadesInteriores: quoteData.conduutoUnidadesInteriores,
+        conductoPrice,
+        ...prices,
+        nombreCliente: formData.nombre,
+        emailCliente: formData.email,
+        telefonoCliente: formData.telefono,
+        direccionCliente: formData.direccion,
+        codigoPostalCliente: formData.codigoPostal,
       });
 
       if (response.ok) {

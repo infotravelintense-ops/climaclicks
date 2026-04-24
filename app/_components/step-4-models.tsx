@@ -4,6 +4,7 @@ import Image from 'next/image';
 import { Snowflake, Zap, ShieldCheck, AlertTriangle, X } from 'lucide-react';
 import { useState } from 'react';
 import type { Language, Equipment } from '@/app/types';
+import { submitContact } from '@/app/lib/form-submit';
 
 interface Step4Props {
   models: Equipment[];
@@ -105,16 +106,12 @@ export function Step4Models({ models, language, onSelectModel, selectedModel, fr
   const handleAsesoramientoSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const response = await fetch('/api/contact', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          tipoServicio: 'asesoramiento_tecnico',
-          nombre: formData.nombre,
-          email: formData.email,
-          telefono: formData.telefono,
-          descripcion: `Solicitud de asesoramiento técnico para instalación. Frigorías requeridas: ${frigoriasCalculadas}. ${formData.descripcion}`,
-        }),
+      const response = await submitContact({
+        tipoServicio: 'asesoramiento_tecnico',
+        nombre: formData.nombre,
+        email: formData.email,
+        telefono: formData.telefono,
+        descripcion: `Solicitud de asesoramiento técnico para instalación. Frigorías requeridas: ${frigoriasCalculadas}. ${formData.descripcion}`,
       });
       if (response.ok) {
         alert('Solicitud enviada. Gabriel Guardiola se pondrá en contacto contigo pronto.');
