@@ -3,18 +3,19 @@
  * Cross-environment Prisma generate wrapper.
  *
  * Why this exists:
- *  - The original prisma/schema.prisma contains an absolute `output` path
- *    ("/home/ubuntu/climamallorca/nextjs_space/node_modules/.prisma/client")
- *    that the internal Abacus hosting requires.
- *  - On environments like Cloudflare Pages (or any CI) the path /home/ubuntu
- *    does not exist and the postinstall step fails with:
- *      EACCES: permission denied, mkdir '/home/ubuntu'
+ *  - The original prisma/schema.prisma may contain an absolute `output` path
+ *    that targets the local development host's filesystem. The internal
+ *    hosting platform requires that absolute path.
+ *  - On other build environments (e.g. Cloudflare Pages, generic CI runners)
+ *    that absolute parent directory does not exist and the postinstall step
+ *    fails with: EACCES permission denied, mkdir '<absolute-path>'
  *
  * Strategy:
- *  - Try to honour the original schema first.
- *  - If `prisma generate` fails because of the absolute output path, regenerate
- *    using a temporary schema with that line stripped, so Prisma falls back to
- *    its default (node_modules/.prisma/client relative to the schema).
+ *  - First try to honour the original schema.
+ *  - If `prisma generate` fails (typically because of the absolute output
+ *    path), regenerate using a temporary schema with that line stripped, so
+ *    Prisma falls back to its default location (node_modules/.prisma/client
+ *    relative to the schema).
  */
 
 const fs = require('fs');
@@ -38,7 +39,7 @@ function runPrismaGenerate(schemaArg) {
 }
 
 function stripAbsoluteOutput(schemaContent) {
-  // Remove any `output = "/..."` line that points to an absolute path.
+  // Remove any `output = "/..."` line that points to an absolute filesystem path.
   return schemaContent.replace(
     /^\s*output\s*=\s*"\/[^"]*"\s*\r?\n/gm,
     ''
@@ -51,14 +52,14 @@ function main() {
     process.exit(0);
   }
 
-  // First attempt: original schema (works on Abacus).
+  // First attempt: original schema.
   console.log('[prisma-postinstall] Attempting prisma generate with original schema...');
   if (runPrismaGenerate()) {
     console.log('[prisma-postinstall] Prisma client generated successfully.');
     process.exit(0);
   }
 
-  // Fallback: rewrite schema without absolute output path (works on Cloudflare/CI).
+  // Fallback: rewrite schema without absolute output path.
   console.warn(
     '[prisma-postinstall] Original schema failed. Falling back to portable schema (no absolute output path).'
   );
